@@ -1,25 +1,13 @@
 import bg_login from '../../assets/images/bg_login.jpg';
-import logo_text_icon from '../../assets/images/logo_text_icon.png';
 import { Link } from 'react-router-dom';
-export default function Login() {
+export default function Signup() {
   return (
     <div
       className="hero min-h-screen bg-base-200"
       style={{ backgroundImage: `url(${bg_login})` }}
     >
       <div className="hero-overlay bg-opacity-60"></div>
-      <div className="hero-content flex-col lg:flex-row">
-        <div className="card w-96 bg-base-100 shadow-xl">
-          <figure className="p-5 bg-slate-400">
-            <img src={logo_text_icon} alt="Shoes" />
-          </figure>
-          <div className="card-body">
-            <h2 className="card-title">If you don&apos;t have account!</h2>
-            <Link to={'/signup'} className="text-blue-500 hover:underline">
-              Signup
-            </Link>
-          </div>
-        </div>
+      <div className="w-6/12 hero-content flex-col lg:flex-row">
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
           <form className="card-body">
             <div className="form-control">
@@ -28,7 +16,7 @@ export default function Login() {
               </label>
               <input
                 type="text"
-                placeholder="email"
+                placeholder="Email"
                 className="input input-bordered"
                 required
               />
@@ -43,15 +31,32 @@ export default function Login() {
                 className="input input-bordered"
                 required
               />
+            </div>
+            <div className="form-control">
               <label className="label">
-                <Link to="forgot-password" className="label-text-alt link link-hover text-blue-500 text-base">
-                  Forgot password?
-                </Link>
+                <span className="label-text">Confirm Password</span>
               </label>
+              <input
+                type="password"
+                placeholder="confirm password"
+                className="input input-bordered"
+                required
+              />
             </div>
             <div className="form-control mt-6">
-              <button className="btn btn-primary">Login</button>
+              <button className="btn btn-primary">Signup</button>
             </div>
+            <label className="label">
+              <span className="label-text-alt text-base">
+                Already have an account?
+              </span>
+              <Link
+                to="/login"
+                className="label-text-alt link link-hover text-blue-500 text-base"
+              >
+                Login
+              </Link>
+            </label>
           </form>
         </div>
       </div>
