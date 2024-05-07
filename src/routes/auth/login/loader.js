@@ -1,8 +1,10 @@
-import { redirect } from "react-router-dom";
+import { redirect } from 'react-router-dom';
+import verifyLoginApi from '../../../api/auth/verifyLogin.api';
 
 export const loader = async () => {
-  console.log('loading contacts...');
+  const responseVerifyLogin = await verifyLoginApi();
+  if (responseVerifyLogin.ok) {
+    return redirect('/homepage');
+  }
   return 1;
-  
-  // return redirect('/signup');
 };

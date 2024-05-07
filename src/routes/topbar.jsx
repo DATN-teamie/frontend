@@ -1,10 +1,13 @@
-import verifyLogin from '../api/auth/verifyLogin.api';
+import verifyLoginApi from '../api/auth/verifyLogin.api';
 import TopBar from '../pages/TopBar';
+import { redirect } from 'react-router-dom';
 
 async function topBarLoader() {
-  const response = await verifyLogin();
-  console.log(response);
-  return response;
+  const responseVerifyLogin = await verifyLoginApi();
+  if (!responseVerifyLogin.ok) {
+    return redirect('/login');
+  }
+  return 1;
 
 }
 
