@@ -1,7 +1,33 @@
+import { useState } from 'react';
 import bg_login from '../../assets/images/bg_login.jpg';
 import logo_text_icon from '../../assets/images/logo_text_icon.png';
 import { Link } from 'react-router-dom';
+import loginApi from '../../api/auth/login.api';
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const login = async () => {
+    setLoading(true);
+    setError('');
+  
+    const response = await loginApi({ email, password });
+    console.log(response);
+    if (!response.ok) {
+      setFail(response.data);
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
+    setError('');
+  }
+
+  const setFail = (data) => {
+    setError(data.message);
+  }
+
   return (
     <div
       className="hero min-h-screen bg-base-200"
@@ -21,7 +47,7 @@ export default function Login() {
           </div>
         </div>
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-          <form className="card-body">
+          <div className="card-body">
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -31,6 +57,7 @@ export default function Login() {
                 placeholder="email"
                 className="input input-bordered"
                 required
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="form-control">
@@ -42,17 +69,22 @@ export default function Login() {
                 placeholder="password"
                 className="input input-bordered"
                 required
+                onChange={(e) => setPassword(e.target.value)}
               />
+              <span className="text-red-500 text-xs">{error}</span>
               <label className="label">
-                <Link to="forgot-password" className="label-text-alt link link-hover text-blue-500 text-base">
+                <Link
+                  to="forgot-password"
+                  className="label-text-alt link link-hover text-blue-500 text-base"
+                >
                   Forgot password?
                 </Link>
               </label>
             </div>
-            <div className="form-control mt-6">
-              <button className="btn btn-primary">Login</button>
+            <div className={`form-control mt-6 ${loading ? 'loading' : ''}`}>
+              <button className="btn btn-primary" onClick={()=>login()}>Login</button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>

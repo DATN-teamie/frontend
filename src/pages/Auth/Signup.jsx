@@ -9,7 +9,8 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  async function signup() {
+  
+  const signup = async () => {
     setLoading(true);
     setError('');
     const response = await signupApi({ email, password, confirmPassword });
@@ -21,11 +22,11 @@ export default function Signup() {
     }
     setLoading(false);
     setError('');
-  }
+  };
 
-  function setFail(data) {
+  const setFail = (data) => {
     setError(data.message);
-  }
+  };
 
   return (
     <div
