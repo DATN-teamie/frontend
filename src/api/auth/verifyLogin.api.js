@@ -3,7 +3,8 @@ import { sleep } from '../../helper/sleep';
 
 export default async function () {
   try {
-    await sleep(500);
+    await sleep(1000);
+    console.log('hello');
     const response = await fetch(`${baseurl}/api/verify-login`, {
       method: 'GET',
       credentials: 'include',
