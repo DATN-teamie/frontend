@@ -1,24 +1,28 @@
 import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from '../ErrorPage';
 import Login from '../pages/Auth/Login';
-import App from '../App';
 import Signup from '../pages/Auth/Signup';
+import {loader as loginLoader} from './login/loader';
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <App />,
     errorElement: <ErrorPage />,
     children: [
       {
+        path: '/',
+        element: <Login />,
+        loader: loginLoader,
+        index: true,
+      },
+      {
         path: '/login',
         element: <Login />,
-        index: true,
+        loader: loginLoader,
       },
       {
         path: '/signup',
         element: <Signup />,
-      }
+      },
     ],
   },
 ]);

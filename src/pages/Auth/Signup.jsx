@@ -1,6 +1,32 @@
+import { useState } from 'react';
 import bg_login from '../../assets/images/bg_login.jpg';
 import { Link } from 'react-router-dom';
+import signupApi from '../../api/auth/signup.api';
+
 export default function Signup() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  async function signup() {
+    setLoading(true);
+    setError('');
+    const response = await signupApi({ email, password, confirmPassword });
+    console.log(response);
+    if (!response.ok) {
+      setFail(response.data);
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
+    setError('');
+  }
+
+  function setFail(data) {
+    setError(data.message);
+  }
+
   return (
     <div
       className="hero min-h-screen bg-base-200"
@@ -9,7 +35,7 @@ export default function Signup() {
       <div className="hero-overlay bg-opacity-60"></div>
       <div className="w-6/12 hero-content flex-col lg:flex-row">
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-          <form className="card-body">
+          <div className="card-body">
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -19,6 +45,7 @@ export default function Signup() {
                 placeholder="Email"
                 className="input input-bordered"
                 required
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="form-control">
@@ -30,6 +57,7 @@ export default function Signup() {
                 placeholder="password"
                 className="input input-bordered"
                 required
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="form-control">
@@ -41,12 +69,16 @@ export default function Signup() {
                 placeholder="confirm password"
                 className="input input-bordered"
                 required
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-            <div className="form-control mt-6">
-              <button className="btn btn-primary">Signup</button>
+            <div className={`form-control mt-6 ${loading ? 'loading' : ''}`}>
+              <button className="btn btn-primary" onClick={() => signup()}>
+                Signup
+              </button>
             </div>
-            <label className="label">
+            <span className="text-red-500 text-sm">{error}</span>
+            <label className={`label ${loading ? 'hidden' : ''}`}>
               <span className="label-text-alt text-base">
                 Already have an account?
               </span>
@@ -57,7 +89,7 @@ export default function Signup() {
                 Login
               </Link>
             </label>
-          </form>
+          </div>
         </div>
       </div>
     </div>
