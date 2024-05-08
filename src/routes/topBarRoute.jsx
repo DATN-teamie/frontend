@@ -4,6 +4,7 @@ import { redirect } from 'react-router-dom';
 import CreateWorkspace from '../pages/Workspace/CreateWorkspace';
 import ListWorkspace from '../pages/Workspace/ListWorkspace';
 import listWorkspaceLoader from './workspace/listWorkspaceLoader';
+import workspaceRoute from './workspace/workspaceRoute';
 
 async function topBarLoader() {
   const responseVerifyLogin = await verifyLoginApi();
@@ -11,7 +12,6 @@ async function topBarLoader() {
     return redirect('/login');
   }
   return 1;
-
 }
 
 export default {
@@ -23,11 +23,11 @@ export default {
       path: '',
       element: <ListWorkspace />,
       loader: listWorkspaceLoader,
-
     },
     {
       path: 'create-workspace',
       element: <CreateWorkspace />,
     },
+    workspaceRoute,
   ],
 };

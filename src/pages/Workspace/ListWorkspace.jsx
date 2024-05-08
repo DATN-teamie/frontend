@@ -10,9 +10,9 @@ export default function ListWorkspace() {
     const srcImg = workspace.cover_img
       ? IMG_URL + workspace.cover_img
       : default_workspace_cover;
-    console.log(srcImg);
     return (
       <div
+        onClick={() => navigate(`w/${workspace.id}`)}
         key={workspace.id}
         className="flex flex-col w-56 h-60 bg-white shadow-md rounded-md  m-5 hover:shadow-2xl cursor-pointer"
       >
@@ -26,8 +26,10 @@ export default function ListWorkspace() {
     <div className="flex flex-col">
       <h1 className="font-bold text-2xl ml-5 my-3">Your Workspaces</h1>
       <div className="flex flex-row flex-wrap grow">
-        <div className="flex flex-col w-56 h-60 bg-white shadow-md rounded-md  m-5 hover:shadow-2xl cursor-pointer justify-center items-center"
-        onClick={()=>navigate("create-workspace")}>
+        <div
+          className="flex flex-col w-56 h-60 bg-white shadow-md rounded-md  m-5 hover:shadow-2xl cursor-pointer justify-center items-center"
+          onClick={() => navigate('create-workspace')}
+        >
           <span className="text-lg font-bold mt-2 ml-5">Create New</span>
           <span className="text-lg font-bold mt-2 ml-5">Workspace</span>
         </div>

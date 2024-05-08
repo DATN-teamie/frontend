@@ -4,7 +4,6 @@ import createWspApi from '../../api/workspace/createWsp.api';
 import success_verify_svg from '../../assets/success_verify.svg';
 import { useNavigate } from 'react-router-dom';
 
-
 export default function CreateWorkspace() {
   const navigate = useNavigate();
   const [workspaceName, setWorkspaceName] = useState('');
@@ -59,7 +58,7 @@ export default function CreateWorkspace() {
 
   return (
     <div className="flex grow justify-center ">
-      <div className="flex flex-col w-96 space-y-10">
+      <div className="flex flex-col  w-[40rem] px-16 space-y-10 border-2  shadow-lg">
         <h1 className="mt-5 font-bold text-3xl">Create Workspace</h1>
         <div className="flex flex-row justify-center items-center space-x-5">
           <div className="avatar">
@@ -77,7 +76,7 @@ export default function CreateWorkspace() {
         <label className="input input-bordered flex items-center gap-2">
           <input
             type="text"
-            className="grow"
+            className="w-full"
             placeholder="Workspace Name"
             onChange={(e) => setWorkspaceName(e.target.value)}
           />

@@ -1,12 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from '../ErrorPage';
-import auth from './auth';
-import topbar from './topbar';
+import authRoute from './auth/authRoute';
+import topBarRoute from './topBarRoute';
 
 const router = createBrowserRouter([
   {
     errorElement: <ErrorPage />,
-    children: [...auth, topbar],
+    children: [...authRoute, topBarRoute],
   },
 ]);
 

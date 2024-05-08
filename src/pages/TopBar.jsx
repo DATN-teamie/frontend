@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import { IMG_URL } from '../constant/common';
 import default_workspace_cover from '../assets/default_workspace_cover.jpg';
+import { CiSquarePlus } from 'react-icons/ci';
 
 export default function TopBar() {
   const navigate = useNavigate();
@@ -29,11 +30,13 @@ export default function TopBar() {
           const srcImg = workspace.cover_img
             ? IMG_URL + workspace.cover_img
             : default_workspace_cover;
-          console.log(srcImg);
           return (
-            <div key={workspace.id}>
+            <div
+              key={workspace.id}
+              onClick={() => navigate(`w/${workspace.id}`)}
+            >
               <div className="flex flex-row items-center w-48 h-20 bg-white rounded-md  m-5 hover:bg-gray-400 cursor-pointer p-5">
-                <img src={srcImg} className="w-14 h-14" />
+                <img src={srcImg} className="w-14 h-14 rounded-lg" />
                 <span className="text-lg font-bold mt-2 ml-5">
                   {workspace.name}
                 </span>
@@ -81,18 +84,10 @@ export default function TopBar() {
             className="tooltip tooltip-right h-full items-center flex"
             data-tip="create new workspace"
           >
-            <button
-              className="btn btn-square aspect-square"
+            <CiSquarePlus
               onClick={() => navigate('create-workspace')}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="size-4"
-              >
-                <path d="M 11 2 L 11 11 L 2 11 L 2 13 L 11 13 L 11 22 L 13 22 L 13 13 L 22 13 L 22 11 L 13 11 L 13 2 Z" />
-              </svg>
-            </button>
+              className="size-10 hover:bg-slate-700 cursor-pointer"
+            />
           </div>
         </div>
         <div
