@@ -16,8 +16,8 @@ export default function WorkspaceSideBar() {
 
   return (
     <>
-      <div className="inset-y-0 left-0 w-80 h-full border-2 flex flex-col overflow-scroll">
-        <div className="flex flex-row items-center  bg-white rounded-md mx-5 mt-3">
+      <div className="inset-y-0 left-0 w-80 min-w-80 max-w-80 h-full border-2 flex flex-col overflow-scroll">
+        <div className="flex flex-row items-center rounded-md mx-5 mt-3">
           <img src={srcImg} className="size-14 rounded-lg" />
           <span className="text-lg font-bold ml-5">{workspace.name}</span>
         </div>

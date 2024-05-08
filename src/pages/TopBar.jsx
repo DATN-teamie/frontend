@@ -50,7 +50,7 @@ export default function TopBar() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="inset-x-0 top-0 h-14 text-white bg-slate-600 text-xl px-5 flex items-center">
+      <div className="inset-x-0 top-0 h-14 min-h-14 max-h-14 text-white bg-slate-600 text-xl px-5 flex items-center">
         <div
           name="start-block"
           className="space-x-8 flex basis-1/2 items-center  h-10"
