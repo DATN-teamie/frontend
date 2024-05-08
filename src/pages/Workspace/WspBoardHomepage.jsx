@@ -29,11 +29,9 @@ export default function WspBoardHomepage() {
         </div>
       </div>
       <div className="divider"></div>
-      <div tabIndex={0} className="collapse bg-base-200 collapse-arrow">
-        <div className="collapse-title text-xl font-medium">Description</div>
-        <div className="collapse-content">
-          <p>{currentWorkspace.description}</p>
-        </div>
+      <h1 className="font-bold text-2xl mt-5">Description</h1>
+      <div className="  min-h-28 max-h-28 mt-3 p-3 overflow-scroll bg-gray-100 rounded" placeholder="Bio" disabled>
+        {currentWorkspace.description}
       </div>
 
       <h1 className="font-bold text-2xl mt-5">Your Boards</h1>

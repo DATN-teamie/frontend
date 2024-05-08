@@ -1,12 +1,13 @@
 import { CiViewBoard, CiUser, CiSettings, CiSquarePlus } from 'react-icons/ci';
 import { LiaUserShieldSolid } from 'react-icons/lia';
-import { Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
 import { IMG_URL } from '../../constant/common';
 import { useStore } from '../../hook/useStore';
 import default_workspace_cover from '../../assets/default_workspace_cover.jpg';
 
 export default function WorkspaceSideBar() {
   const { workspace } = useLoaderData();
+  const navigate = useNavigate();
   const updateWorkspace = useStore((state) => state.updateWorkspace);
   updateWorkspace(workspace);
 
@@ -22,7 +23,9 @@ export default function WorkspaceSideBar() {
           <span className="text-lg font-bold ml-5">{workspace.name}</span>
         </div>
         <div className="divider"></div>
-        <div className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
+        <div 
+        onClick={()=> {navigate('')}}
+        className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
           <CiViewBoard className="size-6" />
           <span className="text-lg ml-5">Boards</span>
         </div>
@@ -30,7 +33,9 @@ export default function WorkspaceSideBar() {
           <CiUser className="size-6" />
           <span className="text-lg ml-5">Members</span>
         </div>
-        <div className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
+        <div 
+        onClick={()=> {navigate('workspace-update')}}
+        className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
           <CiSettings className="size-6" />
           <span className="text-lg ml-5">Workspace Settings</span>
         </div>
