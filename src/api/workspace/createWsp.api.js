@@ -1,21 +1,24 @@
 import { apikey, baseurl } from '../constant.api';
 import { sleep } from '../../helper/sleep';
 
-export default async function ({ email, password }) {
+export default async function ({ cover_img, name, description }) {
   try {
     await sleep(1000);
-    const response = await fetch(`${baseurl}/api/login`, {
+    const formData = new FormData();
+    if (cover_img) {
+      formData.append('cover_img', cover_img, 'image');
+    }
+    formData.append('name', name);
+    formData.append('description', description);
+
+    const response = await fetch(`${baseurl}/api/workspace`, {
       method: 'POST',
-      credentials: "include",
+      credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
         accept: 'application/json',
         apikey: apikey,
       },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
+      body: formData,
     });
     const data = await response.json();
     return {

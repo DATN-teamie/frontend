@@ -1,6 +1,6 @@
 import teamie_logo from '../assets/teamie_logo.png';
 import logoutApi from '../api/auth/logout.api';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 
 export default function TopBar() {
@@ -19,28 +19,36 @@ export default function TopBar() {
           name="start-block"
           className="space-x-8 flex basis-1/2 items-center"
         >
-          <a
-            href="#"
+          <Link
+            to="/h"
             className="text-slate-300 flex items-center text-2xl hover:bg-slate-700 px-3 my-2 mb-3 rounded-md"
           >
             <img src={teamie_logo} alt="teamie_logo" className="size-14" />
             Teamie
-          </a>
+          </Link>
           <div className="hover:bg-slate-700 px-3 my-2 mb-3 rounded-md p-3">
             <a href="#" className="">
               Workspaces
             </a>
           </div>
-
-          <button href="#" className="btn btn-square">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              className="size-6"
+          <div
+            className="tooltip tooltip-right"
+            data-tip="create new workspace"
+          >
+            <button
+              href="#"
+              className="btn btn-square"
+              onClick={() => navigate('create-workspace')}
             >
-              <path d="M 11 2 L 11 11 L 2 11 L 2 13 L 11 13 L 11 22 L 13 22 L 13 13 L 22 13 L 22 11 L 13 11 L 13 2 Z" />
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="size-6"
+              >
+                <path d="M 11 2 L 11 11 L 2 11 L 2 13 L 11 13 L 11 22 L 13 22 L 13 13 L 22 13 L 22 11 L 13 11 L 13 2 Z" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div
           name="end-block"

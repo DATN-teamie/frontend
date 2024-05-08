@@ -13,12 +13,12 @@ async function topBarLoader() {
 }
 
 export default {
-  path: '/homepage',
+  path: '/h',
   element: <TopBar />,
   loader: topBarLoader,
   children: [
     {
-      path: 'w',
+      path: 'create-workspace',
       element: <CreateWorkspace />,
     },
   ],

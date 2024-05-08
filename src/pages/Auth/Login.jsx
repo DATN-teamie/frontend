@@ -27,7 +27,7 @@ export default function Login() {
     setLoading(false);
     setError('');
     setSuccess(true);
-    navigate('/homepage');
+    navigate('/h');
   };
 
   const setFail = (data) => {
