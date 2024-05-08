@@ -2,9 +2,11 @@ import { useState } from 'react';
 import default_file_image from '../../assets/default_file_image.png';
 import createWspApi from '../../api/workspace/createWsp.api';
 import success_verify_svg from '../../assets/success_verify.svg';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function CreateWorkspace() {
+  const navigate = useNavigate();
   const [workspaceName, setWorkspaceName] = useState('');
   const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -45,6 +47,7 @@ export default function CreateWorkspace() {
     }
     clearState();
     setSuccess(true);
+    navigate('/h');
   };
 
   const clearState = () => {

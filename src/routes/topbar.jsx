@@ -2,6 +2,8 @@ import verifyLoginApi from '../api/auth/verifyLogin.api';
 import TopBar from '../pages/TopBar';
 import { redirect } from 'react-router-dom';
 import CreateWorkspace from '../pages/Workspace/CreateWorkspace';
+import ListWorkspace from '../pages/Workspace/ListWorkspace';
+import listWorkspaceLoader from './workspace/listWorkspaceLoader';
 
 async function topBarLoader() {
   const responseVerifyLogin = await verifyLoginApi();
@@ -17,6 +19,12 @@ export default {
   element: <TopBar />,
   loader: topBarLoader,
   children: [
+    {
+      path: '',
+      element: <ListWorkspace />,
+      loader: listWorkspaceLoader,
+
+    },
     {
       path: 'create-workspace',
       element: <CreateWorkspace />,

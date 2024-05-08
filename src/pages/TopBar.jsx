@@ -1,10 +1,15 @@
 import teamie_logo from '../assets/teamie_logo.png';
 import logoutApi from '../api/auth/logout.api';
+import getListWspApi from '../api/workspace/getListWsp.api';
 import { Link, useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
+import { useState } from 'react';
+import { IMG_URL } from '../constant/common';
+import default_workspace_cover from '../assets/default_workspace_cover.jpg';
 
 export default function TopBar() {
   const navigate = useNavigate();
+  const [listWspRender, setListWspRender] = useState([]);
   const logout = async () => {
     const response = await logoutApi();
     console.log(response);
@@ -12,38 +17,78 @@ export default function TopBar() {
       navigate('/login');
     }
   };
+
+  const clickWorkspaces = async () => {
+    const response = await getListWspApi();
+    let workspaces = [];
+
+    if (response.ok) {
+      workspaces = response.data.workspaces;
+      setListWspRender(
+        workspaces.map((workspace) => {
+          const srcImg = workspace.cover_img
+            ? IMG_URL + workspace.cover_img
+            : default_workspace_cover;
+          console.log(srcImg);
+          return (
+            <div key={workspace.id}>
+              <div className="flex flex-row items-center w-48 h-20 bg-white rounded-md  m-5 hover:bg-gray-400 cursor-pointer p-5">
+                <img src={srcImg} className="w-14 h-14" />
+                <span className="text-lg font-bold mt-2 ml-5">
+                  {workspace.name}
+                </span>
+              </div>
+            </div>
+          );
+        })
+      );
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen">
-      <div className="inset-x-0 top-0 h-16 text-white bg-slate-600 text-xl px-5 flex">
+      <div className="inset-x-0 top-0 h-14 text-white bg-slate-600 text-xl px-5 flex items-center">
         <div
           name="start-block"
-          className="space-x-8 flex basis-1/2 items-center"
+          className="space-x-8 flex basis-1/2 items-center  h-10"
         >
           <Link
             to="/h"
-            className="text-slate-300 flex items-center text-2xl hover:bg-slate-700 px-3 my-2 mb-3 rounded-md"
+            className="text-slate-300 flex items-center text-2xl hover:bg-slate-700  rounded-md h-full"
           >
-            <img src={teamie_logo} alt="teamie_logo" className="size-14" />
+            <img src={teamie_logo} alt="teamie_logo" className="size-10" />
             Teamie
           </Link>
-          <div className="hover:bg-slate-700 px-3 my-2 mb-3 rounded-md p-3">
-            <a href="#" className="">
+          <div className="dropdown fill-transparent bg-transparent h-full">
+            <div
+              onClick={() => clickWorkspaces()}
+              tabIndex={0}
+              role="button"
+              className="btn h-10 fill-transparent bg-transparent text-white text-lg border-none hover:bg-slate-700"
+            >
               Workspaces
-            </a>
+            </div>
+            <div
+              tabIndex={0}
+              className="flex flex-col items-center flex-nowrap dropdown-content z-[1] menu p-2  bg-base-100 rounded-box w-72 text-black max-h-72 overflow-scroll shadow-2xl"
+            >
+              <div className="divider">Your Workpsaces</div>
+              {listWspRender}
+            </div>
           </div>
+
           <div
-            className="tooltip tooltip-right"
+            className="tooltip tooltip-right h-full items-center flex"
             data-tip="create new workspace"
           >
             <button
-              href="#"
-              className="btn btn-square"
+              className="btn btn-square aspect-square"
               onClick={() => navigate('create-workspace')}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                className="size-6"
+                className="size-4"
               >
                 <path d="M 11 2 L 11 11 L 2 11 L 2 13 L 11 13 L 11 22 L 13 22 L 13 13 L 22 13 L 22 11 L 13 11 L 13 2 Z" />
               </svg>
