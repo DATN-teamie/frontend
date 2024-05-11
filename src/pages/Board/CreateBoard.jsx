@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import default_file_image from '../../assets/default_file_image.png';
 import success_verify_svg from '../../assets/success_verify.svg';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useRevalidator } from 'react-router-dom';
 import createBoardApi from '../../api/board/createBoard.api';
 import { useStore } from '../../hook/useStore';
 
 export default function CreateBoard() {
   const navigate = useNavigate();
+  const revalidator = useRevalidator();
   const currentWorkspace = useStore((state) => state.currentWorkspace);
   const [boardName, setBoardName] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
@@ -47,8 +48,9 @@ export default function CreateBoard() {
       return;
     }
     clearState();
-    // setSuccess(true);
-    navigate('');
+    setSuccess(true);
+    navigate('..');
+    revalidator.revalidate();
   };
 
   const clearState = () => {
