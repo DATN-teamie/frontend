@@ -30,7 +30,11 @@ export default function WspBoardHomepage() {
       </div>
       <div className="divider"></div>
       <h1 className="font-bold text-2xl mt-5">Description</h1>
-      <div className="  min-h-28 max-h-28 mt-3 p-3 overflow-scroll bg-gray-100 rounded" placeholder="Bio" disabled>
+      <div
+        className="min-h-28 max-h-28 mt-3 p-3  bg-gray-100 rounded overflow-scroll"
+        placeholder="Bio"
+        disabled
+      >
         {currentWorkspace.description}
       </div>
 

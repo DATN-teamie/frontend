@@ -1,24 +1,15 @@
 import { useState } from 'react';
 import default_file_image from '../../assets/default_file_image.png';
-import updateWspApi from '../../api/workspace/updateWsp.api';
 import success_verify_svg from '../../assets/success_verify.svg';
-import { useNavigate, useRevalidator } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import createBoardApi from '../../api/board/createBoard.api';
 import { useStore } from '../../hook/useStore';
-import default_workspace_cover from '../../assets/default_workspace_cover.jpg';
-import { IMG_URL } from '../../constant/common';
 
-export default function UpdateWorkspace() {
+export default function CreateBoard() {
   const navigate = useNavigate();
   const currentWorkspace = useStore((state) => state.currentWorkspace);
-  const revalidator = useRevalidator();
-
-
-  const srcImg = currentWorkspace.cover_img
-    ? IMG_URL + currentWorkspace.cover_img
-    : default_workspace_cover;
-
-  const [workspaceName, setWorkspaceName] = useState(currentWorkspace.name);
-  const [description, setDescription] = useState(currentWorkspace.description);
+  const [boardName, setBoardName] = useState('');
+  const [isPrivate, setIsPrivate] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imageRender, setImageRender] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -41,28 +32,23 @@ export default function UpdateWorkspace() {
     setImageRender(URL.createObjectURL(e.target.files[0]));
   };
 
-  const updateWorkspace = async () => {
+  const createBoard = async () => {
     clearState();
     setLoading(true);
-    const response = await updateWspApi({
+    const response = await createBoardApi({
       workspace_id: currentWorkspace.id,
       cover_img: imageFile,
-      name: workspaceName,
-      description: description,
+      name: boardName,
+      isPrivate: isPrivate,
     });
-    console.log(response);
     if (!response.ok) {
       clearState();
       setError(response.data.message);
       return;
     }
     clearState();
-    setSuccess(true);
-    // setTimeout(() => {
-    //   setSuccess(false);
-    // }, 1000);
-    navigate('..');
-    revalidator.revalidate();
+    // setSuccess(true);
+    navigate('');
   };
 
   const clearState = () => {
@@ -73,13 +59,13 @@ export default function UpdateWorkspace() {
   };
 
   return (
-    <div className="flex grow justify-center">
+    <div className="flex grow justify-center ">
       <div className="flex flex-col  w-[40rem] px-16 space-y-10 border-2  shadow-lg">
-        <h1 className="mt-5 font-bold text-3xl">Update Workspace</h1>
+        <h1 className="mt-5 font-bold text-3xl">Create Board</h1>
         <div className="flex flex-row justify-center items-center space-x-5">
           <div className="avatar">
             <div className="w-24 rounded">
-              <img src={imageRender || srcImg || default_file_image} />
+              <img src={imageRender || default_file_image} />
             </div>
           </div>
           <input
@@ -93,30 +79,40 @@ export default function UpdateWorkspace() {
           <input
             type="text"
             className="w-full"
-            placeholder="Workspace Name"
-            value={workspaceName}
-            onChange={(e) => setWorkspaceName(e.target.value)}
+            placeholder="Board Name"
+            onChange={(e) => setBoardName(e.target.value)}
           />
         </label>
-        <textarea
-          className="textarea textarea-bordered textarea-lg w-full"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        ></textarea>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <div
+              className="tooltip tooltip-right"
+              data-tip="if board is private, you must invite people to this board"
+            >
+              <span className="">Is Private?</span>
+            </div>
+
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={isPrivate}
+              onChange={(e) => setIsPrivate(e.target.checked)}
+            />
+          </label>
+        </div>
         {success ? (
           <div className="flex space-x-3 items-center">
             <img src={success_verify_svg} alt="success" className="size-8" />
-            <span className="text-green-500">success update workspace</span>
+            <span className="text-green-500">success create new board</span>
           </div>
         ) : loading ? (
           <span className="loading loading-spinner "></span>
         ) : (
           <button
             className="btn btn-primary w-full"
-            onClick={() => updateWorkspace()}
+            onClick={() => createBoard()}
           >
-            Save
+            Create Board
           </button>
         )}
 

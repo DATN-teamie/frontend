@@ -23,9 +23,12 @@ export default function WorkspaceSideBar() {
           <span className="text-lg font-bold ml-5">{workspace.name}</span>
         </div>
         <div className="divider"></div>
-        <div 
-        onClick={()=> {navigate('')}}
-        className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
+        <div
+          onClick={() => {
+            navigate('');
+          }}
+          className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer "
+        >
           <CiViewBoard className="size-6" />
           <span className="text-lg ml-5">Boards</span>
         </div>
@@ -33,9 +36,12 @@ export default function WorkspaceSideBar() {
           <CiUser className="size-6" />
           <span className="text-lg ml-5">Members</span>
         </div>
-        <div 
-        onClick={()=> {navigate('workspace-update')}}
-        className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
+        <div
+          onClick={() => {
+            navigate('workspace-update');
+          }}
+          className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer "
+        >
           <CiSettings className="size-6" />
           <span className="text-lg ml-5">Workspace Settings</span>
         </div>
@@ -46,7 +52,9 @@ export default function WorkspaceSideBar() {
         <div className="divider divider-start ml-3 font-bold text-lg">
           Your Boards
         </div>
-        <div className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
+        <div
+        onClick={()=> navigate('create-board')}
+         className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
           <CiSquarePlus className="size-6" />
           <span className="text-lg ml-5">Create New Board</span>
         </div>

@@ -1,19 +1,20 @@
 import { apikey, baseurl } from '../constant.api';
 import { sleep } from '../../helper/sleep';
 
-export default async function ({ workspace_id, cover_img, name, description }) {
+export default async function ({ workspace_id, cover_img, name, isPrivate }) {
   try {
     await sleep(1000);
-
     const formData = new FormData();
     if (cover_img) {
       formData.append('cover_img', cover_img, 'image');
     }
+    formData.append('workspace_id', workspace_id);
     formData.append('name', name);
-    formData.append('description', description);
 
+    isPrivate = isPrivate == 'true' ? '1' : '0';
+    formData.append('is_private', isPrivate);
 
-    const response = await fetch(`${baseurl}/api/workspaces/${workspace_id}?_method=PUT`, {
+    const response = await fetch(`${baseurl}/api/boards`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -22,6 +23,7 @@ export default async function ({ workspace_id, cover_img, name, description }) {
       },
       body: formData,
     });
+    console.log(response);
     const data = await response.json();
     return {
       data: data,

@@ -11,7 +11,7 @@ export default async function ({ cover_img, name, description }) {
     formData.append('name', name);
     formData.append('description', description);
 
-    const response = await fetch(`${baseurl}/api/workspace`, {
+    const response = await fetch(`${baseurl}/api/workspaces`, {
       method: 'POST',
       credentials: 'include',
       headers: {

@@ -4,7 +4,7 @@ import { sleep } from '../../helper/sleep';
 export default async function (workspace_id) {
   try {
     await sleep(500);
-    const response = await fetch(`${baseurl}/api/workspace/${workspace_id}`, {
+    const response = await fetch(`${baseurl}/api/workspaces/${workspace_id}`, {
       method: 'GET',
       credentials: 'include',
       headers: {
