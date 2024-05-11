@@ -4,6 +4,7 @@ import CreateWorkspace from '../pages/Workspace/CreateWorkspace';
 import ListWorkspace from '../pages/Workspace/ListWorkspace';
 import listWorkspaceLoader from './workspace/listWorkspaceLoader';
 import workspaceRoute from './workspace/workspaceRoute';
+import UpdateUser from '../pages/User/UpdateUser';
 
 
 export default {
@@ -19,6 +20,10 @@ export default {
     {
       path: 'create-workspace',
       element: <CreateWorkspace />,
+    },
+    {
+      path: 'update-user',
+      element: <UpdateUser />,
     },
     workspaceRoute,
   ],

@@ -15,9 +15,7 @@ export default function TopBar() {
   const { user } = useLoaderData();
   const updateAuthUser = useStore((state) => state.updateAuthUser);
   updateAuthUser(user);
-  const avatar = user.avatar
-    ? IMG_URL + user.avatar
-    : default_avatar;
+  const avatar = user.avatar ? IMG_URL + user.avatar : default_avatar;
 
   const navigate = useNavigate();
   const [listWspRender, setListWspRender] = useState([]);
@@ -124,7 +122,7 @@ export default function TopBar() {
               <div className="flex flex-row items-center">
                 <div className="avatar mt-4">
                   <div className="w-14 rounded-full">
-                    <img src={default_avatar} />
+                    <img src={avatar} />
                   </div>
                 </div>
                 <div className="flex flex-col ml-4">
@@ -133,7 +131,10 @@ export default function TopBar() {
                 </div>
               </div>
 
-              <div className="hover:bg-gray-300 cursor-pointer mt-5 text-base">
+              <div
+                onClick={() => navigate('update-user')}
+                className="hover:bg-gray-300 cursor-pointer mt-5 text-base"
+              >
                 Settings
               </div>
 
