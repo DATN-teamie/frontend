@@ -2,7 +2,7 @@ import { useState } from 'react';
 import default_file_image from '../../assets/default_file_image.png';
 import updateAuthUserApi from '../../api/user/updateAuthUser';
 import success_verify_svg from '../../assets/success_verify.svg';
-import {useRevalidator } from 'react-router-dom';
+import { useRevalidator } from 'react-router-dom';
 import { useStore } from '../../hook/useStore';
 import default_avatar from '../../assets/default_avatar.jpg';
 import { IMG_URL } from '../../constant/common';
@@ -11,10 +11,7 @@ export default function UpdateUser() {
   const authUser = useStore((state) => state.authUser);
   const revalidator = useRevalidator();
 
-
-  const avatar = authUser.avatar
-    ? IMG_URL + authUser.avatar
-    : default_avatar;
+  const avatar = authUser.avatar ? IMG_URL + authUser.avatar : default_avatar;
 
   const [name, setName] = useState(authUser.name);
   const [description, setDescription] = useState(authUser.description);
@@ -74,8 +71,10 @@ export default function UpdateUser() {
         <h1 className="mt-5 font-bold text-3xl">Update Profile</h1>
         <div className="flex flex-row justify-center items-center space-x-5">
           <div className="avatar">
-            <div className="w-24 rounded">
-              <img src={imageRender || avatar || default_file_image} />
+            <div className="avatar mt-4">
+              <div className="w-24 rounded-full">
+                <img src={imageRender || avatar || default_file_image} />
+              </div>
             </div>
           </div>
           <input
@@ -85,7 +84,7 @@ export default function UpdateUser() {
           />
         </div>
         <span className="text-red-500">{fileError}</span>
-        <span className='italic'>email: {authUser.email}</span>
+        <span className="italic">email: {authUser.email}</span>
         <label className="input input-bordered flex items-center gap-2">
           <input
             type="text"

@@ -44,7 +44,10 @@ export default function WspBoardHomepage() {
           <CiSettings className="size-6 ml-3" />
         </div>
         <div className="flex flex-row-reverse basis-1/2 items-center">
-          <button className="btn btn-primary text-base">
+          <button
+            onClick={() => navigate('members/invite')}
+            className="btn btn-primary text-base"
+          >
             <RiUserAddLine />
             Invite Workspace Members
           </button>

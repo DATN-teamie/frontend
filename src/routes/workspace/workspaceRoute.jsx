@@ -3,6 +3,7 @@ import UpdateWorkspace from '../../pages/Workspace/UpdateWorkspace';
 import WorkspaceSideBar from '../../pages/Workspace/WorkspaceSideBar';
 import WspBoardHomepage from '../../pages/Workspace/WspBoardHomepage';
 import detailWorkspaceLoader from './detailWorkspaceLoader';
+import memberWorkspaceRoute from './memberWorkspaceRoute';
 
 export default {
   path: 'w/:workspaceId',
@@ -22,5 +23,6 @@ export default {
       path: 'create-board',
       element: <CreateBoard />,
     },
+    memberWorkspaceRoute,
   ],
 };

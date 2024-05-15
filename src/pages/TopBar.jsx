@@ -119,8 +119,8 @@ export default function TopBar() {
             >
               <h1 className="text-base font-bold text-gray-600">Account</h1>
 
-              <div className="flex flex-row items-center">
-                <div className="avatar mt-4">
+              <div className="flex flex-row items-center mt-4">
+                <div className="avatar">
                   <div className="w-14 rounded-full">
                     <img src={avatar} />
                   </div>
@@ -142,7 +142,7 @@ export default function TopBar() {
 
               <div
                 onClick={() => logout()}
-                className="hover:bg-gray-300 cursor-pointer text-base"
+                className="hover:bg-gray-300 cursor-pointer text-base text-red-500"
               >
                 Logout
               </div>

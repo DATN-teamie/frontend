@@ -48,7 +48,10 @@ export default function WorkspaceSideBar() {
           <CiViewBoard className="size-6" />
           <span className="text-lg ml-5">Boards</span>
         </div>
-        <div className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
+        <div
+          onClick={() => navigate('members')}
+          className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer "
+        >
           <CiUser className="size-6" />
           <span className="text-lg ml-5">Members</span>
         </div>
