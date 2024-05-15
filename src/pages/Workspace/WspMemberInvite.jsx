@@ -7,17 +7,20 @@ import inviteUserWspApi from '../../api/workspace/inviteUsersWsp';
 import success_verify_svg from '../../assets/success_verify.svg';
 
 import { IMG_URL } from '../../constant/common';
+import { useRevalidator } from 'react-router-dom';
 
 export default function WspMemberInvite() {
+  const revalidator = useRevalidator();
   const currentWorkspace = useStore((state) => state.currentWorkspace);
   const [search, setSearch] = useState('');
   const [searchUsers, setSearchUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingSearch, setLoadingSearch] = useState(false);
+  const [loadingInvite, setLoadingInvite] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const onSearchUsers = async () => {
-    setLoading(true);
+    setLoadingSearch(true);
     setSearchUsers([]);
     const response = await getUsersNotInWsp({
       workspace_id: currentWorkspace.id,
@@ -29,10 +32,11 @@ export default function WspMemberInvite() {
         setSearchUsers(userNotInWsp);
       }
     }
-    setLoading(false);
+    setLoadingSearch(false);
   };
 
   const inviteUsersWsp = async () => {
+    setLoadingInvite(true);
     if (selectedUsers.length === 0) {
       return;
     }
@@ -46,10 +50,12 @@ export default function WspMemberInvite() {
       setSuccess(true);
       setSelectedUsers([]);
       setSearchUsers([]);
+      revalidator.revalidate();
       setTimeout(() => {
         setSuccess(false);
       }, 1000);
     }
+    setLoadingInvite(false);
   };
 
   const searchUsersRender = () => {
@@ -134,7 +140,7 @@ export default function WspMemberInvite() {
         </div>
 
         <div className="flex flex-col w-full h-52 max-h-52 mt-5 border-2 rounded-lg overflow-y-scroll overflow-x-clip">
-          {loading ? (
+          {loadingSearch ? (
             <span className="loading loading-bars loading-lg self-center mt-5"></span>
           ) : (
             ''
@@ -144,7 +150,9 @@ export default function WspMemberInvite() {
         <div className="flex flex-col w-full h-52 max-h-52 border-2 rounded-lg overflow-y-scroll overflow-x-clip">
           {selectedUsersRender()}
         </div>
-        {success ? (
+        {loadingInvite ? (
+          <div className="loading loading-spinner mt-5"></div>
+        ) : success ? (
           <div className="flex space-x-3 items-center">
             <img src={success_verify_svg} alt="success" className="size-8" />
             <span className="text-green-500">Invite Success</span>

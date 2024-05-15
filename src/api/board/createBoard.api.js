@@ -11,7 +11,7 @@ export default async function ({ workspace_id, cover_img, name, isPrivate }) {
     formData.append('workspace_id', workspace_id);
     formData.append('name', name);
 
-    isPrivate = isPrivate == 'true' ? '1' : '0';
+    isPrivate = isPrivate == true ? '1' : '0';
     formData.append('is_private', isPrivate);
 
     const response = await fetch(`${baseurl}/api/boards`, {

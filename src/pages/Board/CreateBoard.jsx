@@ -47,6 +47,7 @@ export default function CreateBoard() {
       setError(response.data.message);
       return;
     }
+    console.log('create Board ', response);
     clearState();
     setSuccess(true);
     navigate('..');
