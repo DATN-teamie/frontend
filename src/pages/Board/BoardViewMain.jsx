@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from 'uuid';
+import { GoPlus } from 'react-icons/go';
 
 // DnD
 import {
@@ -320,89 +321,101 @@ export default function BoardViewMain() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl py-10">
+    <div className="flex grow max-w-full">
       {/* Add Container Modal */}
       <Modal
         showModal={showAddContainerModal}
         setShowModal={setShowAddContainerModal}
       >
         <div className="flex flex-col w-full items-start gap-y-4">
-          <h1 className="text-gray-800 text-3xl font-bold">Add Container</h1>
+          <h1 className="text-gray-800 text-3xl font-bold">Add List</h1>
           <input
+            className="input input-bordered w-full"
             type="text"
-            placeholder="Container Title"
+            placeholder="List Title"
             name="containername"
             value={containerName}
             onChange={(e) => setContainerName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onAddContainer();
+              }
+            }}
           />
-          <button onClick={onAddContainer}>Add container</button>
+          <button onClick={onAddContainer}>Add List</button>
         </div>
       </Modal>
       {/* Add Item Modal */}
       <Modal showModal={showAddItemModal} setShowModal={setShowAddItemModal}>
         <div className="flex flex-col w-full items-start gap-y-4">
-          <h1 className="text-gray-800 text-3xl font-bold">Add Item</h1>
+          <h1 className="text-gray-800 text-3xl font-bold">Add Card</h1>
           <input
+            className="input input-bordered w-full"
             type="text"
-            placeholder="Item Title"
+            placeholder="Card Title"
             name="itemname"
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onAddItem();
+              }
+            }}
           />
-          <button onClick={onAddItem}>Add Item</button>
+          <button onClick={onAddItem}>Add Card</button>
         </div>
       </Modal>
-      <div className="flex items-center justify-between gap-y-2">
-        <button onClick={() => setShowAddContainerModal(true)}>
-          Add Container
-        </button>
-      </div>
-      <div className="mt-10">
-        <div className="grid grid-cols-3 gap-6">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCorners}
-            onDragStart={handleDragStart}
-            onDragMove={handleDragMove}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext items={containers.map((i) => i.id)}>
-              {containers.map((container) => (
-                <Container
-                  id={container.id}
-                  title={container.title}
-                  key={container.id}
-                  onAddItem={() => {
-                    setShowAddItemModal(true);
-                    setCurrentContainerId(container.id);
-                  }}
-                >
-                  <SortableContext items={container.items.map((i) => i.id)}>
-                    <div className="flex items-start flex-col gap-y-4">
-                      {container.items.map((i) => (
-                        <Items title={i.title} id={i.id} key={i.id} />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </Container>
-              ))}
-            </SortableContext>
-            <DragOverlay adjustScale={false}>
-              {/* Drag Overlay For item Item */}
-              {activeId && activeId.toString().includes('item') && (
-                <Items id={activeId} title={findItemTitle(activeId)} />
-              )}
-              {/* Drag Overlay For Container */}
-              {activeId && activeId.toString().includes('container') && (
-                <Container id={activeId} title={findContainerTitle(activeId)}>
-                  {findContainerItems(activeId).map((i) => (
-                    <Items key={i.id} title={i.title} id={i.id} />
-                  ))}
-                </Container>
-              )}
-            </DragOverlay>
-          </DndContext>
-        </div>
+      <div className="flex flex-row h-full space-x-5 max-w-full overflow-scroll p-5">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragMove={handleDragMove}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={containers.map((i) => i.id)}>
+            {containers.map((container) => (
+              <Container
+                id={container.id}
+                title={container.title}
+                key={container.id}
+                onAddItem={() => {
+                  setShowAddItemModal(true);
+                  setCurrentContainerId(container.id);
+                }}
+              >
+                <SortableContext items={container.items.map((i) => i.id)}>
+                  <div className="flex items-start flex-col">
+                    {container.items.map((i) => (
+                      <Items title={i.title} id={i.id} key={i.id} />
+                    ))}
+                  </div>
+                </SortableContext>
+              </Container>
+            ))}
+            <button
+              onClick={() => setShowAddContainerModal(true)}
+              className="btn w-80 min-w-80 max-w-80 p-5 h-fit bg-gray-200 rounded-xl"
+            >
+              <GoPlus className="size-5" />
+              Add another List
+            </button>
+          </SortableContext>
+          <DragOverlay adjustScale={false}>
+            {/* Drag Overlay For item Item */}
+            {activeId && activeId.toString().includes('item') && (
+              <Items id={activeId} title={findItemTitle(activeId)} />
+            )}
+            {/* Drag Overlay For Container */}
+            {activeId && activeId.toString().includes('container') && (
+              <Container id={activeId} title={findContainerTitle(activeId)}>
+                {findContainerItems(activeId).map((i) => (
+                  <Items key={i.id} title={i.title} id={i.id} />
+                ))}
+              </Container>
+            )}
+          </DragOverlay>
+        </DndContext>
       </div>
     </div>
   );
