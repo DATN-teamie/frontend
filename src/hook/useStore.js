@@ -6,4 +6,7 @@ export const useStore = create((set) => ({
 
   authUser: null,
   updateAuthUser: (newUser) => set({ authUser: newUser }),
+
+  currentBoard: null,
+  updateBoard: (newBoard) => set({ currentBoard: newBoard }),
 }));

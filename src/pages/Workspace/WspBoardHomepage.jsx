@@ -1,4 +1,4 @@
-import { CiSettings } from 'react-icons/ci';
+import { CiSettings, CiGlobe, CiLock } from 'react-icons/ci';
 import { useStore } from '../../hook/useStore';
 import default_workspace_cover from '../../assets/default_workspace_cover.jpg';
 import default_board_cover from '../../assets/default_board_cover.jpg';
@@ -23,12 +23,19 @@ export default function WspBoardHomepage() {
       : default_board_cover;
     return (
       <div
-        // onClick={() => navigate(`w/${workspace.id}`)}
+        onClick={() => navigate(`b/${board.id}`)}
         key={board.id}
         className="flex flex-col size-56 bg-white shadow-md rounded-md  m-5 hover:shadow-2xl cursor-pointer"
       >
         <img src={srcImg} className="w-full h-40" />
-        <span className="text-lg font-bold mt-2 ml-5">{board.name}</span>
+        <div className="flex flexrow mt-2 ml-2 items-center">
+          {board.is_private ? (
+            <CiLock className="size-6" />
+          ) : (
+            <CiGlobe className="size-6" />
+          )}
+          <span className="text-lg font-bold ml-3">{board.name}</span>
+        </div>
       </div>
     );
   });

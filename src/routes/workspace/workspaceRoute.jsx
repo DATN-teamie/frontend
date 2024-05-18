@@ -2,6 +2,7 @@ import CreateBoard from '../../pages/Board/CreateBoard';
 import UpdateWorkspace from '../../pages/Workspace/UpdateWorkspace';
 import WorkspaceSideBar from '../../pages/Workspace/WorkspaceSideBar';
 import WspBoardHomepage from '../../pages/Workspace/WspBoardHomepage';
+import boardRoute from '../board/boardRoute';
 import detailWorkspaceLoader from './detailWorkspaceLoader';
 import memberWorkspaceRoute from './memberWorkspaceRoute';
 
@@ -24,5 +25,6 @@ export default {
       element: <CreateBoard />,
     },
     memberWorkspaceRoute,
+    boardRoute,
   ],
 };

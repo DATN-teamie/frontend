@@ -1,4 +1,11 @@
-import { CiViewBoard, CiUser, CiSettings, CiSquarePlus } from 'react-icons/ci';
+import {
+  CiViewBoard,
+  CiUser,
+  CiSettings,
+  CiSquarePlus,
+  CiLock,
+  CiGlobe,
+} from 'react-icons/ci';
 import { LiaUserShieldSolid } from 'react-icons/lia';
 import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
 import { IMG_URL } from '../../constant/common';
@@ -22,11 +29,17 @@ export default function WorkspaceSideBar() {
       : default_board_cover;
     return (
       <div
+        onClick={() => navigate(`b/${board.id}`)}
         key={board.id}
         className="flex flex-row items-center  bg-white rounded-md p-3 hover:bg-gray-200 cursor-pointer"
       >
         <img className="size-12 rounded-lg" src={srcImg} />
-        <span className="text-lg font-bold ml-5">{board.name}</span>
+        {board.is_private ? (
+          <CiLock className="ml-2 size-5" />
+        ) : (
+          <CiGlobe className="ml-2 size-5" />
+        )}
+        <span className="text-lg font-bold ml-3 ">{board.name}</span>
       </div>
     );
   });
@@ -35,10 +48,10 @@ export default function WorkspaceSideBar() {
     <>
       <div className="inset-y-0 left-0 w-80 min-w-80 max-w-80 h-full border-2 flex flex-col overflow-scroll">
         <div className="flex flex-row items-center rounded-md mx-5 mt-3">
-          <img src={srcImg} className="size-14 rounded-lg" />
+          <img src={srcImg} className="size-12 rounded-lg" />
           <span className="text-lg font-bold ml-5">{workspace.name}</span>
         </div>
-        <div className="divider"></div>
+        <div className="divider "></div>
         <div
           onClick={() => {
             navigate('');
@@ -80,7 +93,10 @@ export default function WorkspaceSideBar() {
         </div>
         {boardsRender}
       </div>
-      <div className="flex grow">
+      <div
+        className="flex grow"
+        style={{ maxWidth: 'calc(100% - 20rem)' }}
+      >
         <Outlet />
       </div>
     </>

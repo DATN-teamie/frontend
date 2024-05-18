@@ -150,7 +150,7 @@ export default function TopBar() {
           </div>
         </div>
       </div>
-      <div name="main" className=" h-20 flex grow">
+      <div name="main" className=" h-20 flex grow max-w-full">
         <Outlet />
       </div>
     </div>
