@@ -43,12 +43,28 @@ export default function BoardViewMain() {
         let containers = [];
         if (Array.isArray(response.data.containers)) {
           containers = response.data.containers;
-          console.log(containers);
         }
         setContainers(containers);
       }
     }
     getContainer();
+
+    // window.Echo.channel(
+    //   `created-new-container_board.${currentBoard.id}`
+    // ).listen('CreatedNewContainer', (e) => {
+    //   console.log('create new container event: ', e.container);
+    //   if (!containers.find((container) => container.id === e.container.id)) {
+    //     setContainers([
+    //       ...containers,
+    //       {
+    //         id: e.container.id,
+    //         title: e.container.title,
+    //         position: e.container.position,
+    //         items: [],
+    //       },
+    //     ]);
+    //   }
+    // });
   }, [currentBoard]);
 
   const onAddContainer = async () => {

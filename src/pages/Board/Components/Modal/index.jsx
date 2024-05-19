@@ -33,11 +33,17 @@ export default function Modal({
     <AnimatePresence>
       {showModal && (
         <>
-          <FocusTrap focusTrapOptions={{ initialFocus: false }}>
+          <FocusTrap
+            focusTrapOptions={{
+              initialFocus: false,
+              fallbackFocus: '#desktop-modal',
+            }}
+          >
             <motion.div
+              id="desktop-modal"
               ref={desktopModalRef}
               key="desktop-modal"
-              className="fixed inset-0 z-40 hidden min-h-screen items-center justify-center md:flex"
+              className="fixed inset-0 z-40  min-h-screen items-center justify-center flex"
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -49,7 +55,7 @@ export default function Modal({
             >
               <div
                 className={clsx(
-                  `overflow relative w-full max-w-lg transform rounded-xl border border-gray-200 bg-white p-6 text-left shadow-2xl transition-all`,
+                  `overflow-scroll relative w-full max-w-lg transform rounded-xl border border-gray-200 bg-white p-6 text-left shadow-2xl transition-all`,
                   containerClasses
                 )}
               >

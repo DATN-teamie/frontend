@@ -4,7 +4,7 @@ import { GoPlus } from 'react-icons/go';
 
 import clsx from 'clsx';
 
-const Container = ({ id, children, title, description, onAddItem }) => {
+const Container = ({ id, children, title, onAddItem }) => {
   const {
     attributes,
     setNodeRef,
