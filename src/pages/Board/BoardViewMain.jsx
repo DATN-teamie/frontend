@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { GoPlus } from 'react-icons/go';
+import createContainerApi from '../../api/container/createContainer.api';
+import getListContainerApi from '../../api/container/getListContainer.api';
 
 // DnD
 import {
@@ -22,8 +24,10 @@ import {
 import Container from './Components/Container';
 import Items from './Components/Item';
 import Modal from './Components/Modal';
+import { useStore } from '../../hook/useStore';
 
 export default function BoardViewMain() {
+  const currentBoard = useStore((state) => state.currentBoard);
   const [containers, setContainers] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [currentContainerId, setCurrentContainerId] = useState();
@@ -32,22 +36,46 @@ export default function BoardViewMain() {
   const [showAddContainerModal, setShowAddContainerModal] = useState(false);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
 
-  const onAddContainer = () => {
+  useEffect(() => {
+    async function getContainer() {
+      const response = await getListContainerApi({ board_id: currentBoard.id });
+      if (response.ok) {
+        let containers = [];
+        if (Array.isArray(response.data.containers)) {
+          containers = response.data.containers;
+          console.log(containers);
+        }
+        setContainers(containers);
+      }
+    }
+    getContainer();
+  }, [currentBoard]);
+
+  const onAddContainer = async () => {
     if (!containerName) return;
-    const id = `container-${uuidv4()}`;
-    setContainers([
-      ...containers,
-      {
-        id,
-        title: containerName,
-        items: [],
-      },
-    ]);
+    const response = await createContainerApi({
+      board_id: currentBoard.id,
+      title: containerName,
+      position: containers.length,
+    });
+    if (response.ok) {
+      const newContainer = response.data.container;
+      setContainers([
+        ...containers,
+        {
+          id: newContainer.id,
+          title: newContainer.title,
+          position: newContainer.position,
+          items: [],
+        },
+      ]);
+    }
+    console.log(response);
     setContainerName('');
     setShowAddContainerModal(false);
   };
 
-  const onAddItem = () => {
+  const onAddItem = async () => {
     if (!itemName) return;
     const id = `item-${uuidv4()}`;
     const container = containers.find((item) => item.id === currentContainerId);
@@ -342,7 +370,9 @@ export default function BoardViewMain() {
               }
             }}
           />
-          <button onClick={onAddContainer}>Add List</button>
+          <button className="btn" onClick={onAddContainer}>
+            Add List
+          </button>
         </div>
       </Modal>
       {/* Add Item Modal */}
@@ -362,7 +392,9 @@ export default function BoardViewMain() {
               }
             }}
           />
-          <button onClick={onAddItem}>Add Card</button>
+          <button className="btn" onClick={onAddItem}>
+            Add Card
+          </button>
         </div>
       </Modal>
       <div className="flex flex-row h-full space-x-5 max-w-full overflow-scroll p-5">
