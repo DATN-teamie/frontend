@@ -1,11 +1,11 @@
 import { apikey, baseurl, getSocketId } from '../constant.api';
 import { sleep } from '../../helper/sleep';
 
-export default async function ({ board_id, title, position }) {
+export default async function ({ container_id, title, position }) {
   try {
     await sleep(500);
 
-    const response = await fetch(`${baseurl}/api/containers`, {
+    const response = await fetch(`${baseurl}/api/items`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -15,7 +15,7 @@ export default async function ({ board_id, title, position }) {
         apikey: apikey,
       },
       body: JSON.stringify({
-        board_id: board_id,
+        container_id: container_id,
         title: title,
         position: position,
       }),

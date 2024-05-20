@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { GoPlus } from 'react-icons/go';
 import createContainerApi from '../../api/container/createContainer.api';
 import getListContainerApi from '../../api/container/getListContainer.api';
+import createItemApi from '../../api/item/createItem.api';
 
 // DnD
 import {
@@ -48,24 +48,57 @@ export default function BoardViewMain() {
       }
     }
     getContainer();
-
-    // window.Echo.channel(
-    //   `created-new-container_board.${currentBoard.id}`
-    // ).listen('CreatedNewContainer', (e) => {
-    //   console.log('create new container event: ', e.container);
-    //   if (!containers.find((container) => container.id === e.container.id)) {
-    //     setContainers([
-    //       ...containers,
-    //       {
-    //         id: e.container.id,
-    //         title: e.container.title,
-    //         position: e.container.position,
-    //         items: [],
-    //       },
-    //     ]);
-    //   }
-    // });
   }, [currentBoard]);
+
+  window.Echo.channel(`board.${currentBoard.id}`)
+    .listen('CreatedNewContainer', (event) => {
+      if (
+        !containers.find((container) => container.id === event.container.id)
+      ) {
+        // setContainers([
+        //   ...containers,
+        //   {
+        //     id: event.container.id,
+        //     title: event.container.title,
+        //     position: event.container.position,
+        //     items: [],
+        //   },
+        // ]);
+        setContainers((containers) => {
+          if (
+            containers.find((container) => container.id === event.container.id)
+          )
+            return containers;
+          const newContainers = [
+            ...containers,
+            {
+              id: event.container.id,
+              title: event.container.title,
+              position: event.container.position,
+              items: [],
+            },
+          ];
+          return [...newContainers];
+        });
+      }
+    })
+    .listen('CreatedNewItem', (event) => {
+      setContainers((containers) => {
+        const container = containers.find(
+          (container) => container.id === event.item.container_id
+        );
+        if (!container) return containers;
+        if (container.items.find((item) => item.id === event.item.id))
+          return containers;
+        container.items.push({
+          id: event.item.id,
+          title: event.item.title,
+          position: event.item.position,
+        });
+
+        return [...containers];
+      });
+    });
 
   const onAddContainer = async () => {
     if (!containerName) return;
@@ -86,21 +119,28 @@ export default function BoardViewMain() {
         },
       ]);
     }
-    console.log(response);
     setContainerName('');
     setShowAddContainerModal(false);
   };
 
   const onAddItem = async () => {
     if (!itemName) return;
-    const id = `item-${uuidv4()}`;
     const container = containers.find((item) => item.id === currentContainerId);
     if (!container) return;
-    container.items.push({
-      id,
+    const response = await createItemApi({
+      container_id: currentContainerId,
       title: itemName,
+      position: container.items.length,
     });
-    setContainers([...containers]);
+    if (response.ok) {
+      const newItem = response.data.item;
+      container.items.push({
+        id: newItem.id,
+        title: newItem.title,
+        position: newItem.position,
+      });
+      setContainers([...containers]);
+    }
     setItemName('');
     setShowAddItemModal(false);
   };
@@ -380,11 +420,6 @@ export default function BoardViewMain() {
             name="containername"
             value={containerName}
             onChange={(e) => setContainerName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                onAddContainer();
-              }
-            }}
           />
           <button className="btn" onClick={onAddContainer}>
             Add List
@@ -402,11 +437,6 @@ export default function BoardViewMain() {
             name="itemname"
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                onAddItem();
-              }
-            }}
           />
           <button className="btn" onClick={onAddItem}>
             Add Card
