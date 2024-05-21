@@ -26,7 +26,10 @@ export default function BoardTopBar() {
           )}
         </div>
         <div className="flex flex-row-reverse items-center basis-1/2 h-full">
-          <CiSettings className="size-7" />
+          <CiSettings
+            onClick={() => navigate('board-update')}
+            className="size-7 cursor-pointer"
+          />
           <CiUser
             onClick={() => navigate('members')}
             className="size-7 mr-4 cursor-pointer"

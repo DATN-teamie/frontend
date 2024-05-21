@@ -3,6 +3,7 @@ import BoardMemberList from "../../pages/Board/BoardMemberList";
 import BoardMemberTab from "../../pages/Board/BoardMemberTab";
 import BoardTopBar from "../../pages/Board/BoardTopBar";
 import BoardViewMain from "../../pages/Board/BoardViewMain";
+import UpdateBoard from "../../pages/Board/UpdateBoard";
 import detailBoardLoader from "./detailBoardLoader";
 import listUsersBoardLoader from "./listUsersBoardLoader";
 
@@ -14,6 +15,10 @@ export default {
     {
       path: '',
       element: <BoardViewMain />,
+    },
+    {
+      path: 'board-update',
+      element: <UpdateBoard />,
     },
     {
       path: 'members',

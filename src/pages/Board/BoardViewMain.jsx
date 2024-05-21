@@ -85,6 +85,7 @@ export default function BoardViewMain() {
           return containers;
         container.items.push({
           id: event.item.id,
+          container_id: event.item.container_id,
           title: event.item.title,
           position: event.item.position,
         });
@@ -122,6 +123,8 @@ export default function BoardViewMain() {
     setShowAddContainerModal(false);
   };
 
+  console.log(containers);
+
   const onAddItem = async () => {
     if (!itemName) return;
     const container = containers.find((item) => item.id === currentContainerId);
@@ -135,6 +138,7 @@ export default function BoardViewMain() {
       const newItem = response.data.item;
       container.items.push({
         id: newItem.id,
+        container_id: newItem.container_id,
         title: newItem.title,
         position: newItem.position,
       });
@@ -231,8 +235,16 @@ export default function BoardViewMain() {
           activeitemIndex,
           overitemIndex
         );
+        // map position to index
+        newItems[activeContainerIndex].items = newItems[
+          activeContainerIndex
+        ].items.map((item, index) => {
+          item.position = index;
+          return item;
+        });
 
         setContainers(newItems);
+
       } else {
         // In different containers
         let newItems = [...containers];
@@ -250,6 +262,13 @@ export default function BoardViewMain() {
           overContainerIndex
         ].items.map((item, index) => {
           item.container_id = overContainer.id;
+          item.position = index;
+          return item;
+        });
+        // change position by index of active container
+        newItems[activeContainerIndex].items = newItems[
+          activeContainerIndex
+        ].items.map((item, index) => {
           item.position = index;
           return item;
         });
@@ -300,6 +319,13 @@ export default function BoardViewMain() {
         item.position = index;
         return item;
       });
+      // change position by index of active container
+      newItems[activeContainerIndex].items = newItems[
+        activeContainerIndex
+      ].items.map((item, index) => {
+        item.position = index;
+        return item;
+      });
 
       setContainers(newItems);
     }
@@ -346,7 +372,6 @@ export default function BoardViewMain() {
           items.push(item);
         });
       });
-
       await updatePositionItemApi({
         board_id: currentBoard.id,
         items: items,
