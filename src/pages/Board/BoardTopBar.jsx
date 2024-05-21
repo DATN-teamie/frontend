@@ -1,10 +1,11 @@
-import { Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
 import { useStore } from '../../hook/useStore';
 import { CiLock, CiGlobe, CiUser, CiSettings } from 'react-icons/ci';
 import { LiaUserShieldSolid } from 'react-icons/lia';
 
 export default function BoardTopBar() {
   const { board } = useLoaderData();
+  const navigate = useNavigate();
   const updateBoard = useStore((state) => state.updateBoard);
   updateBoard(board);
 
@@ -26,7 +27,10 @@ export default function BoardTopBar() {
         </div>
         <div className="flex flex-row-reverse items-center basis-1/2 h-full">
           <CiSettings className="size-7" />
-          <CiUser className="size-7 mr-4" />
+          <CiUser
+            onClick={() => navigate('members')}
+            className="size-7 mr-4 cursor-pointer"
+          />
           <LiaUserShieldSolid className="size-7 mr-4" />
         </div>
       </div>

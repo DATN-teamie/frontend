@@ -1,12 +1,12 @@
 import { apikey, baseurl } from '../constant.api';
 import { sleep } from '../../helper/sleep';
 
-export default async function ({ user_ids, workspace_id }) {
+export default async function ({ user_ids, board_id }) {
   try {
     await sleep(500);
 
     const response = await fetch(
-      `${baseurl}/api/workspaces/${workspace_id}/invite`,
+      `${baseurl}/api/boards/${board_id}/invite`,
       {
         method: 'POST',
         credentials: 'include',

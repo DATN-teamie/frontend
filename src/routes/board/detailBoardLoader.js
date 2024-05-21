@@ -1,4 +1,4 @@
-import getDetailBoardApi from '../../api/board/getDetailBoard';
+import getDetailBoardApi from '../../api/board/getDetailBoard.api';
 export default async function detailWorkspaceLoader({ params }) {
   const boardId = params.boardId;
   let response = await getDetailBoardApi({ board_id: boardId });

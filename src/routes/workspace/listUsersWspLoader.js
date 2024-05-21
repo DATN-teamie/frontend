@@ -1,5 +1,5 @@
 import getUsersInWspApi from '../../api/workspace/getUsersInWsp';
-export default async function listWorkspaceLoader({ params }) {
+export default async function listUsersWspLoader({ params }) {
   const workspace_id = params.workspaceId;
   const response = await getUsersInWspApi({ workspace_id });
   let users = [];
