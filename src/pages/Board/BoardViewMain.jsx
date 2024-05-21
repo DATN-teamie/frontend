@@ -4,7 +4,7 @@ import createContainerApi from '../../api/container/createContainer.api';
 import getListContainerApi from '../../api/container/getListContainer.api';
 import createItemApi from '../../api/item/createItem.api';
 import updatePositionContainerApi from '../../api/container/updatePositionContainer.api';
-import updatePositionItemInContainerApi from '../../api/item/updatePositionItemInContainer.api';
+import updatePositionItemApi from '../../api/item/updatePositionItem';
 
 // DnD
 import {
@@ -57,15 +57,6 @@ export default function BoardViewMain() {
       if (
         !containers.find((container) => container.id === event.container.id)
       ) {
-        // setContainers([
-        //   ...containers,
-        //   {
-        //     id: event.container.id,
-        //     title: event.container.title,
-        //     position: event.container.position,
-        //     items: [],
-        //   },
-        // ]);
         setContainers((containers) => {
           if (
             containers.find((container) => container.id === event.container.id)
@@ -103,6 +94,9 @@ export default function BoardViewMain() {
     })
     .listen('UpdatedContainerPosition', (event) => {
       if (Array.isArray(event.containers)) setContainers(event.containers);
+    })
+    .listen('UpdatedItemPosition', (event) => {
+      setContainers(event.containers);
     });
 
   const onAddContainer = async () => {
@@ -251,6 +245,14 @@ export default function BoardViewMain() {
           0,
           removeditem
         );
+        // change container_id of items based on the container they move to
+        newItems[overContainerIndex].items = newItems[
+          overContainerIndex
+        ].items.map((item, index) => {
+          item.container_id = overContainer.id;
+          item.position = index;
+          return item;
+        });
         setContainers(newItems);
       }
     }
@@ -290,6 +292,15 @@ export default function BoardViewMain() {
         1
       );
       newItems[overContainerIndex].items.push(removeditem);
+      // change container_id of items based on the container they move to
+      newItems[overContainerIndex].items = newItems[
+        overContainerIndex
+      ].items.map((item, index) => {
+        item.container_id = overContainer.id;
+        item.position = index;
+        return item;
+      });
+
       setContainers(newItems);
     }
   };
@@ -297,9 +308,6 @@ export default function BoardViewMain() {
   // This is the function that handles the sorting of the containers and items when the user is done dragging.
   async function handleDragEnd(event) {
     const { active, over } = event;
-    console.log(active, over);
-
-    // Handling Container Sorting
     if (
       active.id.toString().includes('container') &&
       over?.id.toString().includes('container') &&
@@ -329,101 +337,22 @@ export default function BoardViewMain() {
         board_id: currentBoard.id,
         containers: newItems,
       });
-    }
-    // Handling item Sorting
-    if (
-      active.id.toString().includes('item') &&
-      over?.id.toString().includes('item') &&
-      active &&
-      over &&
-      active.id !== over.id
-    ) {
-      // Find the active and over container
-      const activeContainer = findValueOfItems(active.id, 'item');
-      const overContainer = findValueOfItems(over.id, 'item');
-
-      // If the active or over container is not found, return
-      if (!activeContainer || !overContainer) return;
-      // Find the index of the active and over container
-      const activeContainerIndex = containers.findIndex(
-        (container) => container.id === activeContainer.id
-      );
-      const overContainerIndex = containers.findIndex(
-        (container) => container.id === overContainer.id
-      );
-      // Find the index of the active and over item
-      const activeitemIndex = activeContainer.items.findIndex(
-        (item) => item.id === active.id
-      );
-      const overitemIndex = overContainer.items.findIndex(
-        (item) => item.id === over.id
-      );
-
-      // In the same container
-      if (activeContainerIndex === overContainerIndex) {
-        let newItems = [...containers];
-        newItems[activeContainerIndex].items = arrayMove(
-          newItems[activeContainerIndex].items,
-          activeitemIndex,
-          overitemIndex
-        );
-        setContainers(newItems);
-
-        const response = await updatePositionItemInContainerApi({
-          board_id: currentBoard.id,
-          container_id: activeContainer.id,
-          items: newItems[activeContainerIndex].items,
+    } else {
+      // sort items
+      // get all items of all containers
+      let items = [];
+      containers.forEach((container) => {
+        container.items.forEach((item) => {
+          items.push(item);
         });
-        console.log(response);
-      } else {
-        // In different containers
-        let newItems = [...containers];
-        const [removeditem] = newItems[activeContainerIndex].items.splice(
-          activeitemIndex,
-          1
-        );
-        newItems[overContainerIndex].items.splice(
-          overitemIndex,
-          0,
-          removeditem
-        );
-        setContainers(newItems);
-      }
-    }
-    // Handling item dropping into Container
-    if (
-      active.id.toString().includes('item') &&
-      over?.id.toString().includes('container') &&
-      active &&
-      over &&
-      active.id !== over.id
-    ) {
-      // Find the active and over container
-      const activeContainer = findValueOfItems(active.id, 'item');
-      const overContainer = findValueOfItems(over.id, 'container');
+      });
 
-      // If the active or over container is not found, return
-      if (!activeContainer || !overContainer) return;
-      // Find the index of the active and over container
-      const activeContainerIndex = containers.findIndex(
-        (container) => container.id === activeContainer.id
-      );
-      const overContainerIndex = containers.findIndex(
-        (container) => container.id === overContainer.id
-      );
-      // Find the index of the active and over item
-      const activeitemIndex = activeContainer.items.findIndex(
-        (item) => item.id === active.id
-      );
-
-      let newItems = [...containers];
-      const [removeditem] = newItems[activeContainerIndex].items.splice(
-        activeitemIndex,
-        1
-      );
-      newItems[overContainerIndex].items.push(removeditem);
-      setContainers(newItems);
+      await updatePositionItemApi({
+        board_id: currentBoard.id,
+        items: items,
+      });
     }
+
     setActiveId(null);
   }
 

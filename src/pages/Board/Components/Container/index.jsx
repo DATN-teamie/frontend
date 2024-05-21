@@ -27,22 +27,19 @@ const Container = ({ id, children, title, onAddItem }) => {
         transform: CSS.Translate.toString(transform),
       }}
       className={clsx(
-        ' flex flex-col w-80 min-w-80 max-w-80 p-4 bg-gray-50 rounded-xl h-fit cursor-default',
+        'w-full h-full p-4 bg-gray-50 rounded-xl flex flex-col gap-y-4 cursor-default',
         isDragging && 'opacity-50'
       )}
     >
-      <div className="flex items-center justify-between">
-        <div
-          className="flex flex-col gap-y-1 w-full p-2 -mb-4 cursor-pointer"
-          {...listeners}
-        >
+      <div className="flex items-center justify-between w-72">
+        <div className="flex flex-col gap-y-1 w-full cursor-pointer" {...listeners}>
           <h1 className="text-gray-800 text-xl">{title}</h1>
         </div>
       </div>
+
       {children}
-      <button className="btn mt-5 bg-gray-200" onClick={onAddItem}>
-        <GoPlus />
-        Add Card
+      <button className="btn" onClick={onAddItem}>
+        Add Item
       </button>
     </div>
   );
