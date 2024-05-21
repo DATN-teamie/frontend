@@ -3,6 +3,8 @@ import { GoPlus } from 'react-icons/go';
 import createContainerApi from '../../api/container/createContainer.api';
 import getListContainerApi from '../../api/container/getListContainer.api';
 import createItemApi from '../../api/item/createItem.api';
+import updatePositionContainerApi from '../../api/container/updatePositionContainer.api';
+import updatePositionItemInContainerApi from '../../api/item/updatePositionItemInContainer.api';
 
 // DnD
 import {
@@ -98,6 +100,9 @@ export default function BoardViewMain() {
 
         return [...containers];
       });
+    })
+    .listen('UpdatedContainerPosition', (event) => {
+      if (Array.isArray(event.containers)) setContainers(event.containers);
     });
 
   const onAddContainer = async () => {
@@ -290,8 +295,9 @@ export default function BoardViewMain() {
   };
 
   // This is the function that handles the sorting of the containers and items when the user is done dragging.
-  function handleDragEnd(event) {
+  async function handleDragEnd(event) {
     const { active, over } = event;
+    console.log(active, over);
 
     // Handling Container Sorting
     if (
@@ -311,9 +317,19 @@ export default function BoardViewMain() {
       // Swap the active and over container
       let newItems = [...containers];
       newItems = arrayMove(newItems, activeContainerIndex, overContainerIndex);
+      // map position to index
+      newItems = newItems.map((container, index) => {
+        container.position = index;
+        return container;
+      });
       setContainers(newItems);
-    }
 
+      // Update the position of the container in the database
+      await updatePositionContainerApi({
+        board_id: currentBoard.id,
+        containers: newItems,
+      });
+    }
     // Handling item Sorting
     if (
       active.id.toString().includes('item') &&
@@ -352,6 +368,13 @@ export default function BoardViewMain() {
           overitemIndex
         );
         setContainers(newItems);
+
+        const response = await updatePositionItemInContainerApi({
+          board_id: currentBoard.id,
+          container_id: activeContainer.id,
+          items: newItems[activeContainerIndex].items,
+        });
+        console.log(response);
       } else {
         // In different containers
         let newItems = [...containers];
