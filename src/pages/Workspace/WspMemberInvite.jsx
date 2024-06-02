@@ -139,7 +139,7 @@ export default function WspMemberInvite() {
           </button>
         </div>
 
-        <div className="flex flex-col w-full h-52 max-h-52 mt-5 border-2 rounded-lg overflow-y-scroll overflow-x-clip">
+        <div className="flex flex-col w-full h-52 max-h-52 mt-5 border-2 rounded-lg overflow-scroll">
           {loadingSearch ? (
             <span className="loading loading-bars loading-lg self-center mt-5"></span>
           ) : (
@@ -147,7 +147,7 @@ export default function WspMemberInvite() {
           )}
           {searchUsersRender()}
         </div>
-        <div className="flex flex-col w-full h-52 max-h-52 border-2 rounded-lg overflow-y-scroll overflow-x-clip">
+        <div className="flex flex-col w-full h-52 max-h-52 border-2 rounded-lg overflow-scroll">
           {selectedUsersRender()}
         </div>
         {loadingInvite ? (

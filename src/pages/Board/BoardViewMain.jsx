@@ -123,8 +123,6 @@ export default function BoardViewMain() {
     setShowAddContainerModal(false);
   };
 
-  console.log(containers);
-
   const onAddItem = async () => {
     if (!itemName) return;
     const container = containers.find((item) => item.id === currentContainerId);
@@ -389,34 +387,34 @@ export default function BoardViewMain() {
         setShowModal={setShowAddContainerModal}
       >
         <div className="flex flex-col w-full items-start gap-y-4">
-          <h1 className="text-gray-800 text-3xl font-bold">Add List</h1>
+          <h1 className="text-gray-800 text-3xl font-bold">Add Container</h1>
           <input
             className="input input-bordered w-full"
             type="text"
-            placeholder="List Title"
+            placeholder="Container Title"
             name="containername"
             value={containerName}
             onChange={(e) => setContainerName(e.target.value)}
           />
           <button className="btn" onClick={onAddContainer}>
-            Add List
+            Add Container
           </button>
         </div>
       </Modal>
       {/* Add Item Modal */}
       <Modal showModal={showAddItemModal} setShowModal={setShowAddItemModal}>
         <div className="flex flex-col w-full items-start gap-y-4">
-          <h1 className="text-gray-800 text-3xl font-bold">Add Card</h1>
+          <h1 className="text-gray-800 text-3xl font-bold">Add Item</h1>
           <input
             className="input input-bordered w-full"
             type="text"
-            placeholder="Card Title"
+            placeholder="Item Title"
             name="itemname"
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
           />
           <button className="btn" onClick={onAddItem}>
-            Add Card
+            Add Item
           </button>
         </div>
       </Modal>
@@ -453,7 +451,7 @@ export default function BoardViewMain() {
               className="btn w-80 min-w-80 max-w-80 p-5 h-fit bg-gray-200 rounded-xl"
             >
               <GoPlus className="size-5" />
-              Add another List
+              Add another Container
             </button>
           </SortableContext>
           <DragOverlay adjustScale={false}>
