@@ -1,11 +1,8 @@
 import { useState } from 'react';
-import { IoIosArrowRoundBack } from 'react-icons/io';
-import default_file_image from '../../assets/default_file_image.png';
 import updateBoardApi from '../../api/board/updateBoard.api';
 import success_verify_svg from '../../assets/success_verify.svg';
 import { useNavigate, useRevalidator } from 'react-router-dom';
 import { useStore } from '../../hook/useStore';
-import { IMG_URL } from '../../constant/common';
 
 export default function ItemOverview() {
   const navigate = useNavigate();
@@ -14,34 +11,20 @@ export default function ItemOverview() {
 
   const [itemName, setItemName] = useState(currentBoard.name);
   const [description, setDescription] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [imageRender, setImageRender] = useState(null);
+  const [isStartDate, setIsStartDate] = useState(false);
+  const [isDueDate, setIsDueDate] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [dueDate, setDueDate] = useState('');
+
   const [loading, setLoading] = useState(false);
-  const [fileError, setFileError] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-
-  const selectFile = (e) => {
-    setFileError('');
-    const file = e.target.files[0];
-    if (file.type.split('/')[0] !== 'image') {
-      setFileError('file should be an image');
-      return;
-    }
-    if (file.size > 1024 * 1024 * 5) {
-      setFileError('File size should be less than 5MB');
-      return;
-    }
-    setImageFile(file);
-    setImageRender(URL.createObjectURL(e.target.files[0]));
-  };
 
   const updateBoard = async () => {
     clearState();
     setLoading(true);
     const response = await updateBoardApi({
       board_id: currentBoard.id,
-      cover_img: imageFile,
       name: itemName,
     });
     console.log(response);
@@ -57,7 +40,6 @@ export default function ItemOverview() {
   };
 
   const clearState = () => {
-    setFileError('');
     setError('');
     setSuccess(false);
     setLoading(false);
@@ -78,6 +60,36 @@ export default function ItemOverview() {
 
         <h1 className="mt-7 font-bold">description</h1>
         <textarea className="textarea textarea-bordered h-36 mt-3"></textarea>
+
+        <h1 className="mt-7 font-bold">start date</h1>
+        <div className="flex flex-row mt-3 items-center">
+          <input
+            type="checkbox"
+            checked={isStartDate}
+            className="size-5 mr-10"
+            onChange={(e) => setIsStartDate(e.target.checked)}
+          />
+          <input
+            aria-label="Date and time"
+            type="date"
+            disabled={isStartDate}
+          />
+        </div>
+
+        <h1 className="mt-7 font-bold">due date</h1>
+        <div className="flex flex-row mt-3 items-center">
+          <input
+            type="checkbox"
+            checked={isDueDate}
+            className="size-5 mr-10"
+            onChange={(e) => setIsDueDate(e.target.checked)}
+          />
+          <input
+            aria-label="Date and time"
+            type="datetime-local"
+            disabled={isDueDate}
+          />
+        </div>
 
         <div className="flex  mt-7">{error}</div>
 
