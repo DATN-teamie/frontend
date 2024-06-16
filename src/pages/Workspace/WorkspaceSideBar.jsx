@@ -77,7 +77,12 @@ export default function WorkspaceSideBar() {
           <CiSettings className="size-6" />
           <span className="text-lg ml-5">Workspace Settings</span>
         </div>
-        <div className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer ">
+        <div
+          onClick={() => {
+            navigate('workspace-role-setting');
+          }}
+          className="flex flex-row items-center p-3 -mt-3 hover:bg-gray-200 cursor-pointer "
+        >
           <LiaUserShieldSolid className="size-6" />
           <span className="text-lg ml-5">Role Settings</span>
         </div>
@@ -93,10 +98,7 @@ export default function WorkspaceSideBar() {
         </div>
         {boardsRender}
       </div>
-      <div
-        className="flex grow"
-        style={{ maxWidth: 'calc(100% - 20rem)' }}
-      >
+      <div className="flex grow" style={{ maxWidth: 'calc(100% - 20rem)' }}>
         <Outlet />
       </div>
     </>

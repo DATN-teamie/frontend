@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import bg_login from '../../assets/images/bg_login.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import signupApi from '../../api/auth/signup.api';
+import success_verify_svg from '../../assets/success_verify.svg';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -9,7 +10,10 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+
+
   const signup = async () => {
     setLoading(true);
     setError('');
@@ -21,7 +25,10 @@ export default function Signup() {
       return;
     }
     setLoading(false);
+    setSuccess(true);
     setError('');
+    navigate('/login');
+
   };
 
   const setFail = (data) => {
@@ -73,11 +80,22 @@ export default function Signup() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-            <div className={`form-control mt-6 ${loading ? 'loading' : ''}`}>
-              <button className="btn btn-primary" onClick={() => signup()}>
-                Signup
-              </button>
-            </div>
+            {success ? (
+              <div className="flex space-x-3 items-center">
+                <img
+                  src={success_verify_svg}
+                  alt="success"
+                  className="size-8"
+                />
+                <span className="text-green-500">Singup success</span>
+              </div>
+            ) : (
+              <div className={`form-control mt-6 ${loading ? 'loading' : ''}`}>
+                <button className="btn btn-primary" onClick={() => signup()}>
+                  Signup
+                </button>
+              </div>
+            )}
             <span className="text-red-500 text-sm">{error}</span>
             <label className={`label ${loading ? 'hidden' : ''}`}>
               <span className="label-text-alt text-base">

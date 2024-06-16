@@ -1,15 +1,28 @@
 import { useLoaderData } from 'react-router-dom';
 import { IMG_URL } from '../../constant/common';
 import default_avatar from '../../assets/default_avatar.jpg';
-import { CiTrash } from 'react-icons/ci';
+import ItemMemberAdd from './ItemMemberAdd';
 
-export default function WspMemberList() {
-  const { users } = useLoaderData();
+export default function ItemMembers() {
+  // const { users } = useLoaderData();
+
+  const users = [
+    {
+      id: 1,
+      name: 'John Doe',
+      email: 'wef@mail.com',
+    },
+  ];
 
   const usersRender = users.map((user) => {
     const avatar = user.avatar ? IMG_URL + user.avatar : default_avatar;
     return (
       <tr key={user.id}>
+        <th>
+          <label>
+            <input type="checkbox" className="checkbox" />
+          </label>
+        </th>
         <td>
           <div className="flex items-center gap-3">
             <div className="avatar">
@@ -23,51 +36,35 @@ export default function WspMemberList() {
           </div>
         </td>
         <td>{user.email}</td>
-        
-        <td>
-          <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn m-1">
-              {user.workspace_role_name}
-            </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-            >
-              <li>
-                <a>role 1</a>
-              </li>
-              <li>
-                <a>role 2</a>
-              </li>
-            </ul>
-          </div>
-        </td>
-
         <th>
           <button className="btn btn-ghost btn-xs">details</button>
-        </th>
-        <th>
-          <CiTrash className="size-6 cursor-pointer text-red-500 hover:bg-gray-200" />
         </th>
       </tr>
     );
   });
 
   return (
-    <div className='flex grow'>
-      <div name="daisyui-table" className="overflow-x-auto">
+    <div className='flex flex-row grow'>
+      <div name="daisyui-table" className="basis-1/2 overflow-x-auto">
         <table className="table">
           {/* head */}
           <thead>
             <tr>
+              <th>
+                <label>
+                  <input type="checkbox" className="checkbox" />
+                </label>
+              </th>
               <th>Name</th>
               <th>Email</th>
-              <th>Role</th>
               <th></th>
             </tr>
           </thead>
           <tbody>{usersRender}</tbody>
         </table>
+      </div>
+      <div>
+        <ItemMemberAdd />
       </div>
     </div>
   );

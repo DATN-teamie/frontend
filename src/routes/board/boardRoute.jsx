@@ -3,11 +3,14 @@ import BoardMemberList from '../../pages/Board/BoardMemberList';
 import BoardMemberTab from '../../pages/Board/BoardMemberTab';
 import BoardTopBar from '../../pages/Board/BoardTopBar';
 import BoardViewMain from '../../pages/Board/BoardViewMain';
+import ItemMembers from '../../pages/Item/ItemMembers';
 import UpdateBoard from '../../pages/Board/UpdateBoard';
 import ItemOverview from '../../pages/Item/ItemOverview';
 import ItemTab from '../../pages/Item/ItemTab';
 import detailBoardLoader from './detailBoardLoader';
 import listUsersBoardLoader from './listUsersBoardLoader';
+import Attachments from '../../pages/Item/Attachments';
+import Checklists from '../../pages/Item/Checklists';
 
 export default {
   path: 'b/:boardId',
@@ -49,15 +52,15 @@ export default {
         },
         {
           path: 'members',
-          element: <h1>hello</h1>,
+          element: <ItemMembers />,
         },
         {
           path: 'attachments',
-          element: <h1>hello</h1>,
+          element: <Attachments />,
         },
         {
           path: 'checklists',
-          element: <h1>hello</h1>,
+          element: <Checklists />,
         },
       ],
     },
