@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useStore } from '../../hook/useStore';
 import { CiSearch } from 'react-icons/ci';
 import default_avatar from '../../assets/default_avatar.jpg';
-import getUsersNotInBoardApi from '../../api/board/getUsersNotInBoard.api';
-import inviteUsersBoardApi from '../../api/board/inviteUsersBoard.api';
+import getUsersNotInItemApi from '../../api/item/getUsersNotInItem.api';
+import addUsersItemApi from '../../api/item/addUsersItem.api';
 import success_verify_svg from '../../assets/success_verify.svg';
 
 import { IMG_URL } from '../../constant/common';
@@ -11,8 +11,8 @@ import { useRevalidator } from 'react-router-dom';
 
 export default function ItemMemberAdd() {
   const revalidator = useRevalidator();
+  const currentItem = useStore((state) => state.currentItem);
   const currentBoard = useStore((state) => state.currentBoard);
-  const currentWorkspace = useStore((state) => state.currentWorkspace);
   const [search, setSearch] = useState('');
   const [searchUsers, setSearchUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -23,28 +23,29 @@ export default function ItemMemberAdd() {
   const onSearchUsers = async () => {
     setLoadingSearch(true);
     setSearchUsers([]);
-    const response = await getUsersNotInBoardApi({
-      workspace_id: currentWorkspace.id,
+    const response = await getUsersNotInItemApi({
       board_id: currentBoard.id,
+      item_id: currentItem.id,
       search: search,
     });
     if (response.ok) {
-      const userNotInBoard = response.data.users.data;
-      if (Array.isArray(userNotInBoard)) {
-        setSearchUsers(userNotInBoard);
+      const userNotInItem = response.data.users.data;
+      if (Array.isArray(userNotInItem)) {
+        setSearchUsers(userNotInItem);
       }
     }
     setLoadingSearch(false);
   };
 
-  const inviteUsersBoard = async () => {
+  const addUsersItem = async () => {
     setLoadingInvite(true);
     if (selectedUsers.length === 0) {
       return;
     }
     const user_ids = selectedUsers.map((user) => user.id);
-    const response = await inviteUsersBoardApi({
+    const response = await addUsersItemApi({
       board_id: currentBoard.id,
+      item_id: currentItem.id,
       user_ids: user_ids,
     });
     console.log(response);
@@ -161,7 +162,7 @@ export default function ItemMemberAdd() {
           </div>
         ) : (
           <button
-            onClick={() => inviteUsersBoard()}
+            onClick={() => addUsersItem()}
             className="btn btn-primary w-full my-5"
           >
             Add

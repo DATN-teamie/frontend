@@ -11,6 +11,8 @@ import detailBoardLoader from './detailBoardLoader';
 import listUsersBoardLoader from './listUsersBoardLoader';
 import Attachments from '../../pages/Item/Attachments';
 import Checklists from '../../pages/Item/Checklists';
+import detailItemLoader from '../item/detailItemLoader';
+import listUsersItemLoader from '../item/listUsersItemLoader';
 
 export default {
   path: 'b/:boardId',
@@ -44,6 +46,7 @@ export default {
     {
       path: 'i/:itemId',
       element: <ItemTab />,
+      loader: detailItemLoader,
       children: [
         {
           path: '',
@@ -53,6 +56,8 @@ export default {
         {
           path: 'members',
           element: <ItemMembers />,
+          loader: listUsersItemLoader,
+
         },
         {
           path: 'attachments',

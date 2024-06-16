@@ -44,7 +44,12 @@ export default function BoardViewMain() {
       if (response.ok) {
         let containers = [];
         if (Array.isArray(response.data.containers)) {
-          containers = response.data.containers;
+          containers = response.data.containers.map((container) => {
+            if (Array.isArray(container.items)) {
+              container.items.sort((a, b) => a.position - b.position);
+            }
+            return container;
+          });
         }
         setContainers(containers);
       }
@@ -98,6 +103,22 @@ export default function BoardViewMain() {
     })
     .listen('UpdatedItemPosition', (event) => {
       setContainers(event.containers);
+    })
+    .listen('UpdateItemEvent', (event) => {
+      setContainers((containers) => {
+        // Create a deep copy of the containers
+        const newContainers = JSON.parse(JSON.stringify(containers));
+
+        const container = newContainers.find(
+          (container) => container.id === event.container_id
+        );
+        const item = container.items.find((item) => item.id === event.item.id);
+        item.title = event.item.title;
+        item.description = event.item.description;
+        item.start_date = event.item.start_date;
+        item.due_date = event.item.due_date;
+        return newContainers;
+      });
     });
 
   const onAddContainer = async () => {
@@ -138,7 +159,10 @@ export default function BoardViewMain() {
         id: newItem.id,
         container_id: newItem.container_id,
         title: newItem.title,
+        description: '',
         position: newItem.position,
+        start_date: null,
+        due_date: null,
       });
       setContainers([...containers]);
     }
@@ -242,7 +266,6 @@ export default function BoardViewMain() {
         });
 
         setContainers(newItems);
-
       } else {
         // In different containers
         let newItems = [...containers];
@@ -440,7 +463,7 @@ export default function BoardViewMain() {
                 <SortableContext items={container.items.map((i) => i.id)}>
                   <div className="flex items-start flex-col">
                     {container.items.map((i) => (
-                      <Items title={i.title} id={i.id} key={i.id} />
+                      <Items title={i.title} id={i.id} key={i.id} item={i} />
                     ))}
                   </div>
                 </SortableContext>

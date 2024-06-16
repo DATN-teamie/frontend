@@ -1,18 +1,13 @@
-import { useLoaderData } from 'react-router-dom';
 import { IMG_URL } from '../../constant/common';
 import default_avatar from '../../assets/default_avatar.jpg';
 import ItemMemberAdd from './ItemMemberAdd';
+import { useLoaderData } from 'react-router-dom';
 
 export default function ItemMembers() {
-  // const { users } = useLoaderData();
+  const { users } = useLoaderData();
 
-  const users = [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'wef@mail.com',
-    },
-  ];
+  console.log(users);
+
 
   const usersRender = users.map((user) => {
     const avatar = user.avatar ? IMG_URL + user.avatar : default_avatar;

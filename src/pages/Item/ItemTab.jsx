@@ -1,10 +1,13 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLoaderData } from 'react-router-dom';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { useStore } from '../../hook/useStore';
 
 export default function ItemTab() {
   const navigate = useNavigate();
-  const currentBoard = useStore((state) => state.currentBoard);
+
+  const { item } = useLoaderData();
+  const updateItem = useStore((state) => state.updateItem);
+  updateItem(item);
 
   return (
     <div className="flex flex-col flex-grow">
@@ -13,8 +16,8 @@ export default function ItemTab() {
           onClick={() => navigate('..')}
           className="size-7 mx-4 cursor-pointer"
         />
-        
-        <h1 className='mx-5 text-lg font-bold'>Item 1</h1>
+
+        <h1 className="mx-5 text-lg font-bold">{item.title}</h1>
 
         <NavLink
           to=""

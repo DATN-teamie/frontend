@@ -1,32 +1,44 @@
 import { useState } from 'react';
-import updateBoardApi from '../../api/board/updateBoard.api';
+import updateItemOverviewApi from '../../api/item/updateItemOverview.api';
 import success_verify_svg from '../../assets/success_verify.svg';
 import { useNavigate, useRevalidator } from 'react-router-dom';
 import { useStore } from '../../hook/useStore';
 
 export default function ItemOverview() {
   const navigate = useNavigate();
+  const currentItem = useStore((state) => state.currentItem);
   const currentBoard = useStore((state) => state.currentBoard);
+
   const revalidator = useRevalidator();
 
-  const [itemName, setItemName] = useState(currentBoard.name);
-  const [description, setDescription] = useState('');
-  const [isStartDate, setIsStartDate] = useState(false);
-  const [isDueDate, setIsDueDate] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [dueDate, setDueDate] = useState('');
+  const [title, setTitle] = useState(currentItem.title);
+  const [description, setDescription] = useState(currentItem.description || '');
+  const [isStartDate, setIsStartDate] = useState(
+    currentItem.start_date ? true : false
+  );
+  const [isDueDate, setIsDueDate] = useState(
+    currentItem.due_date ? true : false
+  );
+  const [startDate, setStartDate] = useState(currentItem.start_date || '');
+  const [dueDate, setDueDate] = useState(currentItem.due_date || '');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const updateBoard = async () => {
+  const updateItem = async () => {
     clearState();
     setLoading(true);
-    const response = await updateBoardApi({
+
+    const response = await updateItemOverviewApi({
       board_id: currentBoard.id,
-      name: itemName,
+      item_id: currentItem.id,
+      title: title,
+      description: description,
+      start_date: isStartDate ? startDate : null,
+      due_date: isDueDate ? dueDate : null,
     });
+
     console.log(response);
     if (!response.ok) {
       clearState();
@@ -35,7 +47,9 @@ export default function ItemOverview() {
     }
     clearState();
     setSuccess(true);
-    navigate('..');
+    setTimeout(() => {
+      setSuccess(false);
+    }, 1000);
     revalidator.revalidate();
   };
 
@@ -53,13 +67,17 @@ export default function ItemOverview() {
             type="text"
             className="w-full"
             placeholder="Item Name"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </label>
 
         <h1 className="mt-7 font-bold">description</h1>
-        <textarea className="textarea textarea-bordered h-36 mt-3"></textarea>
+        <textarea
+          onChange={(e) => setDescription(e.target.value)}
+          className="textarea textarea-bordered h-36 mt-3"
+          value={description}
+        />
 
         <h1 className="mt-7 font-bold">start date</h1>
         <div className="flex flex-row mt-3 items-center">
@@ -72,7 +90,9 @@ export default function ItemOverview() {
           <input
             aria-label="Date and time"
             type="date"
-            disabled={isStartDate}
+            disabled={!isStartDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            value={startDate}
           />
         </div>
 
@@ -87,11 +107,13 @@ export default function ItemOverview() {
           <input
             aria-label="Date and time"
             type="datetime-local"
-            disabled={isDueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            disabled={!isDueDate}
+            value={dueDate}
           />
         </div>
 
-        <div className="flex  mt-7">{error}</div>
+        <div className="flex mt-7 text-red-500">{error}</div>
 
         <div className="mt-7">
           {success ? (
@@ -104,7 +126,7 @@ export default function ItemOverview() {
           ) : (
             <button
               className="btn btn-primary w-full"
-              onClick={() => updateBoard()}
+              onClick={() => updateItem()}
             >
               Save
             </button>

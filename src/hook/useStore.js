@@ -10,6 +10,9 @@ export const useStore = create((set) => ({
   currentBoard: null,
   updateBoard: (newBoard) => set({ currentBoard: newBoard }),
 
+  currentItem: null,
+  updateItem: (newItem) => set({ currentItem: newItem }),
+
   containers: [],
   updateContainers: (newContainers) => set({ containers: newContainers }),
   addContainer: (newContainer) =>
