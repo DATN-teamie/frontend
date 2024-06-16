@@ -6,8 +6,6 @@ import { useLoaderData } from 'react-router-dom';
 export default function ItemMembers() {
   const { users } = useLoaderData();
 
-  console.log(users);
-
 
   const usersRender = users.map((user) => {
     const avatar = user.avatar ? IMG_URL + user.avatar : default_avatar;

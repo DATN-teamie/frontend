@@ -13,6 +13,7 @@ import Attachments from '../../pages/Item/Attachments';
 import Checklists from '../../pages/Item/Checklists';
 import detailItemLoader from '../item/detailItemLoader';
 import listUsersItemLoader from '../item/listUsersItemLoader';
+import listItemAttachmentsLoader from '../item/listItemAttachmentsLoader';
 
 export default {
   path: 'b/:boardId',
@@ -57,11 +58,11 @@ export default {
           path: 'members',
           element: <ItemMembers />,
           loader: listUsersItemLoader,
-
         },
         {
           path: 'attachments',
           element: <Attachments />,
+          loader: listItemAttachmentsLoader,
         },
         {
           path: 'checklists',
