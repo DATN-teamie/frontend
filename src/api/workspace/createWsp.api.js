@@ -3,7 +3,6 @@ import { sleep } from '../../helper/sleep';
 
 export default async function ({ cover_img, name, description }) {
   try {
-    await sleep(1000);
     const formData = new FormData();
     if (cover_img) {
       formData.append('cover_img', cover_img, 'image');

@@ -14,6 +14,7 @@ import Checklists from '../../pages/Item/Checklists';
 import detailItemLoader from '../item/detailItemLoader';
 import listUsersItemLoader from '../item/listUsersItemLoader';
 import listItemAttachmentsLoader from '../item/listItemAttachmentsLoader';
+import checkListItemLoader from '../item/checkListItemLoader';
 
 export default {
   path: 'b/:boardId',
@@ -67,6 +68,7 @@ export default {
         {
           path: 'checklists',
           element: <Checklists />,
+          loader: checkListItemLoader,
         },
       ],
     },

@@ -3,7 +3,6 @@ import { sleep } from '../../helper/sleep';
 
 export default async function ({ board_id, item_id, search }) {
   try {
-    await sleep(500);
     const response = await fetch(
       `${baseurl}/api/items/${item_id}/users-not-in?search=${search}&board_id=${board_id}`,
       {

@@ -8,6 +8,7 @@ import { IMG_URL } from '../../../../constant/common';
 import default_avatar from '../../../../assets/default_avatar.jpg';
 import { MdKeyboardArrowRight, MdKeyboardArrowDown } from 'react-icons/md';
 import { GrAttachment } from 'react-icons/gr';
+import { CiSquareCheck } from 'react-icons/ci';
 
 import { useState } from 'react';
 
@@ -18,6 +19,8 @@ const Items = ({ id, title, item }) => {
   const [users, setUsers] = useState([]);
   const [lengthUsers, setLengthUsers] = useState(0);
   const [attachmentCount, setAttachmentCount] = useState(0);
+  const [checkListItemsLength, setCheckListItemsLength] = useState(0);
+  const [checkListItemsCompleted, setCheckListItemsCompleted] = useState(0);
 
   const {
     attributes,
@@ -46,8 +49,12 @@ const Items = ({ id, title, item }) => {
     setUsers(response.data.item.user_in_item);
     setLengthUsers(response.data.item.user_in_item.length);
     setAttachmentCount(response.data.item.attachments.length);
+    setCheckListItemsLength(response.data.item.checklist_items.length);
+    const completed = response.data.item.checklist_items.filter(
+      (item) => item.is_completed
+    );
+    setCheckListItemsCompleted(completed.length);
   };
-
   const usersRender = users.slice(0, 3).map((user) => {
     const avatar = user.avatar ? IMG_URL + user.avatar : default_avatar;
     return (
@@ -122,6 +129,15 @@ const Items = ({ id, title, item }) => {
             <GrAttachment className="size-4 text-gray-400" />
             <div className="text-xs text-gray-400 ml-2">
               {attachmentCount} attachments
+            </div>
+          </div>
+        )}
+
+        {isExpanded && (
+          <div className="flex flex-row mt-2 items-center">
+            <CiSquareCheck className="size-4 text-gray-400" />
+            <div className="text-xs text-gray-400 ml-2">
+              {checkListItemsCompleted}/{checkListItemsLength}
             </div>
           </div>
         )}

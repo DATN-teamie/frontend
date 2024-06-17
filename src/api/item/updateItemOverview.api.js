@@ -10,7 +10,6 @@ export default async function ({
   due_date,
 }) {
   try {
-    await sleep(1000);
 
     const response = await fetch(
       `${baseurl}/api/items/${item_id}/overview?_method=PUT`,

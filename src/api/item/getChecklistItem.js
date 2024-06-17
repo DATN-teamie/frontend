@@ -1,10 +1,10 @@
 import { apikey, baseurl } from '../constant.api';
 import { sleep } from '../../helper/sleep';
 
-export default async function ({ workspace_id, board_id, search }) {
+export default async function ({ item_id }) {
   try {
     const response = await fetch(
-      `${baseurl}/api/boards/${board_id}/users-not-in?search=${search}&workspace_id=${workspace_id}`,
+      `${baseurl}/api/items/${item_id}/checklist-items`,
       {
         method: 'GET',
         credentials: 'include',

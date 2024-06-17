@@ -3,7 +3,6 @@ import { sleep } from '../../helper/sleep';
 
 export default async function ({ board_id, cover_img, name }) {
   try {
-    await sleep(1000);
 
     const formData = new FormData();
     if (cover_img) {

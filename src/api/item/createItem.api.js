@@ -3,7 +3,6 @@ import { sleep } from '../../helper/sleep';
 
 export default async function ({ container_id, title, position }) {
   try {
-    await sleep(500);
 
     const response = await fetch(`${baseurl}/api/items`, {
       method: 'POST',

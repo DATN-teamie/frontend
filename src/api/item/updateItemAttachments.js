@@ -3,7 +3,6 @@ import { sleep } from '../../helper/sleep';
 
 export default async function ({ item_id, attachments }) {
   try {
-    await sleep(1000);
 
     const formData = new FormData();
     formData.append('item_id', item_id);

@@ -3,7 +3,6 @@ import { sleep } from '../../helper/sleep';
 
 export default async function ({ email, password, confirmPassword }) {
   try {
-    await sleep(1000);
     const response = await fetch(`${baseurl}/api/register`, {
       method: 'POST',
       headers: {
