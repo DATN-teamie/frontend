@@ -18,8 +18,10 @@ export default function WspMemberInvite() {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [loadingInvite, setLoadingInvite] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [inviteError, setInviteError] = useState('');
 
   const onSearchUsers = async () => {
+    setInviteError('');
     setLoadingSearch(true);
     setSearchUsers([]);
     const response = await getUsersNotInWsp({
@@ -36,6 +38,7 @@ export default function WspMemberInvite() {
   };
 
   const inviteUsersWsp = async () => {
+    setInviteError('');
     setLoadingInvite(true);
     if (selectedUsers.length === 0) {
       return;
@@ -46,6 +49,11 @@ export default function WspMemberInvite() {
       user_ids: user_ids,
     });
     console.log(response);
+    if (response.status === 403) {
+      setInviteError('You dont have permission to invite users');
+      setLoadingInvite(false);
+      return;
+    }
     if (response.ok) {
       setSuccess(true);
       setSelectedUsers([]);
@@ -56,6 +64,7 @@ export default function WspMemberInvite() {
       }, 1000);
     }
     setLoadingInvite(false);
+    setInviteError('');
   };
 
   const searchUsersRender = () => {
@@ -138,6 +147,12 @@ export default function WspMemberInvite() {
             Search
           </button>
         </div>
+
+        {inviteError ? (
+          <span className="text-red-500 mt-5">{inviteError}</span>
+        ) : (
+          ''
+        )}
 
         <div className="flex flex-col w-full h-52 max-h-52 mt-5 border-2 rounded-lg overflow-scroll">
           {loadingSearch ? (

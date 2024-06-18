@@ -42,6 +42,11 @@ export default function CreateBoard() {
       name: boardName,
       isPrivate: isPrivate,
     });
+    if (response.status === 403) {
+      clearState();
+      setError('You dont have permission to create board');
+      return;
+    }
     if (!response.ok) {
       clearState();
       setError(response.data.message);

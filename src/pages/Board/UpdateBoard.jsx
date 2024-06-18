@@ -49,6 +49,11 @@ export default function UpdateBoard() {
       name: boardName,
     });
     console.log(response);
+    if (response.status === 403) {
+      clearState();
+      setError('You dont have permission to update this board');
+      return;
+    }
     if (!response.ok) {
       clearState();
       setError(response.data.message);
@@ -72,9 +77,10 @@ export default function UpdateBoard() {
 
   return (
     <div className="flex grow justify-center">
-      <IoIosArrowRoundBack 
-      onClick={() => navigate('..')}
-      className='size-10 cursor-pointer'/>
+      <IoIosArrowRoundBack
+        onClick={() => navigate('..')}
+        className="size-10 cursor-pointer"
+      />
       <div className="flex flex-col  w-[40rem] px-16 space-y-10 border-2  shadow-lg">
         <h1 className="mt-5 font-bold text-3xl">Update Board</h1>
         <div className="flex flex-row justify-center items-center space-x-5">
