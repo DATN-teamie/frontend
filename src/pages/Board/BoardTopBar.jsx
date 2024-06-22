@@ -1,13 +1,36 @@
-import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
+import {
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useRevalidator,
+} from 'react-router-dom';
 import { useStore } from '../../hook/useStore';
 import { CiLock, CiGlobe, CiUser, CiSettings } from 'react-icons/ci';
 import { LiaUserShieldSolid } from 'react-icons/lia';
+import { useState } from 'react';
+import deleteBoard from '../../api/board/deleteBoard';
 
 export default function BoardTopBar() {
   const { board } = useLoaderData();
+  const revalidator = useRevalidator();
+  const [deleteBoardError, setDeleteBoardError] = useState('');
   const navigate = useNavigate();
   const updateBoard = useStore((state) => state.updateBoard);
   updateBoard(board);
+
+  const deleteBoardHandler = async () => {
+    const response = await deleteBoard(board.id);
+    if (response.status == 403) {
+      setDeleteBoardError('You are not allowed to delete this board');
+      return;
+    }
+    if (!response.ok) {
+      setDeleteBoardError('Something went wrong');
+      return;
+    }
+    navigate(`/h/w/${board.workspace_id}`);
+    revalidator.revalidate();
+  };
 
   return (
     <div className="flex flex-col grow max-w-full">
@@ -39,9 +62,10 @@ export default function BoardTopBar() {
 
         <button
           className="btn text-red-400 ml-3 hover:bg-red-500 hover:text-white"
-          onClick={() =>
-            document.getElementById('delete_board_modal').showModal()
-          }
+          onClick={() => {
+            setDeleteBoardError('');
+            document.getElementById('delete_board_modal').showModal();
+          }}
         >
           Delete Board
         </button>
@@ -49,6 +73,9 @@ export default function BoardTopBar() {
           <div className="modal-box">
             <h3 className="font-bold text-lg text-red-500">Delete Board</h3>
             <p className="py-4">Are you sure want to delete this board ?</p>
+            {deleteBoardError && (
+              <p className="text-red-500 mt-3">{deleteBoardError}</p>
+            )}
             <div className="flex flex-row justify-end">
               <button
                 onClick={() =>
@@ -58,7 +85,12 @@ export default function BoardTopBar() {
               >
                 Cancel
               </button>
-              <button className="btn bg-red-500 text-white">Delete</button>
+              <button
+                onClick={deleteBoardHandler}
+                className="btn bg-red-500 text-white"
+              >
+                Delete
+              </button>
             </div>
           </div>
           <form method="dialog" className="modal-backdrop">
