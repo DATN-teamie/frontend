@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import bg_login from '../../assets/images/bg_login.jpg';
-import logo_text_icon from '../../assets/images/logo_text_icon.png';
+import teamwork from '../../assets/teamwork.jpg';
 import success_verify_svg from '../../assets/success_verify.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import loginApi from '../../api/auth/login.api';
@@ -42,7 +42,7 @@ export default function Login() {
       <div className="hero-content flex-col lg:flex-row">
         <div className="card w-96 bg-base-100 shadow-xl">
           <figure className="p-5 bg-slate-400">
-            <img src={logo_text_icon} alt="Shoes" />
+            <img src={teamwork} alt="Shoes" />
           </figure>
           <div className="card-body">
             <h2 className="card-title">If you don&apos;t have account!</h2>

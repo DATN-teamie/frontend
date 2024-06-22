@@ -28,14 +28,43 @@ export default function BoardTopBar() {
         <div className="flex flex-row-reverse items-center basis-1/2 h-full">
           <CiSettings
             onClick={() => navigate('board-update')}
-            className="size-7 cursor-pointer"
+            className="size-7 cursor-pointer hover:bg-gray-200 rounded-md"
           />
           <CiUser
             onClick={() => navigate('members')}
-            className="size-7 mr-4 cursor-pointer"
+            className="size-7 mr-4 cursor-pointer hover:bg-gray-200 rounded-md"
           />
-          <LiaUserShieldSolid className="size-7 mr-4" />
+          <LiaUserShieldSolid className="size-7 mr-4 hover:bg-gray-200 rounded-md" />
         </div>
+
+        <button
+          className="btn text-red-400 ml-3 hover:bg-red-500 hover:text-white"
+          onClick={() =>
+            document.getElementById('delete_board_modal').showModal()
+          }
+        >
+          Delete Board
+        </button>
+        <dialog id="delete_board_modal" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg text-red-500">Delete Board</h3>
+            <p className="py-4">Are you sure want to delete this board ?</p>
+            <div className="flex flex-row justify-end">
+              <button
+                onClick={() =>
+                  document.getElementById('delete_board_modal').close()
+                }
+                className="btn bg-gray-300 mr-3"
+              >
+                Cancel
+              </button>
+              <button className="btn bg-red-500 text-white">Delete</button>
+            </div>
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
       </div>
       <div className="flex grow max-w-full">
         <Outlet />

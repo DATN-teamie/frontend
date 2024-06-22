@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { IMG_URL } from '../constant/common';
 import default_workspace_cover from '../assets/default_workspace_cover.jpg';
 import default_avatar from '../assets/default_avatar.jpg';
+import { IoIosNotificationsOutline } from 'react-icons/io';
 
 import { CiSquarePlus } from 'react-icons/ci';
 import { useStore } from '../hook/useStore';
@@ -148,6 +149,7 @@ export default function TopBar() {
               </div>
             </div>
           </div>
+          <IoIosNotificationsOutline className="size-10 hover:bg-slate-700 cursor-pointer mr-5" />
         </div>
       </div>
       <div name="main" className=" h-20 flex grow max-w-full">
