@@ -11,7 +11,7 @@ const Container = ({
   title,
   onAddItem,
   setCurrentSelectContainer,
-  setAlertBar,
+  setCurrentSelectDeleteContainerId,
 }) => {
   const {
     attributes,
@@ -48,7 +48,7 @@ const Container = ({
         <div className="flex flex-row gap-x-2">
           <GoPencil
             onClick={() => {
-              document.getElementById('edit_container_modal').showModal();  
+              document.getElementById('edit_container_modal').showModal();
               setCurrentSelectContainer({
                 id,
                 title,
@@ -56,7 +56,13 @@ const Container = ({
             }}
             className="cursor-pointer hidden group-hover:block hover:bg-gray-300 size-5"
           />
-          <CiTrash className="cursor-pointer hidden group-hover:block hover:bg-gray-300 size-5 text-red-500" />
+          <CiTrash
+            onClick={() => {
+              document.getElementById('delete_container_modal').showModal();
+              setCurrentSelectDeleteContainerId(id);
+            }}
+            className="cursor-pointer hidden group-hover:block hover:bg-gray-300 size-5 text-red-500"
+          />
         </div>
       </div>
 

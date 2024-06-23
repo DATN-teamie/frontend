@@ -29,6 +29,7 @@ import Items from './Components/Item';
 import Modal from './Components/Modal';
 import { useStore } from '../../hook/useStore';
 import updateContainerTitle from '../../api/container/updateContainerTitle';
+import deleteContainer from '../../api/container/deleteContainer';
 
 export default function BoardViewMain() {
   const currentBoard = useStore((state) => state.currentBoard);
@@ -40,6 +41,8 @@ export default function BoardViewMain() {
     id: null,
     title: '',
   });
+  const [currentSelectDeleteContainerId, setCurrentSelectDeleteContainerId] =
+    useState(null);
   const [itemName, setItemName] = useState('');
   const [showAddContainerModal, setShowAddContainerModal] = useState(false);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
@@ -116,6 +119,18 @@ export default function BoardViewMain() {
     .listen('UpdatedContainerPosition', (event) => {
       if (Array.isArray(event.containers)) setContainers(event.containers);
     })
+    .listen('DeleteContainerEvent', (event) => {
+      let sortContainers = event.containers.sort(
+        (a, b) => a.position - b.position
+      );
+      sortContainers = sortContainers.map((container) => {
+        if (Array.isArray(container.items)) {
+          container.items.sort((a, b) => a.position - b.position);
+        }
+        return container;
+      });
+      setContainers(sortContainers);
+    })
     .listen('UpdateContainerTitleEvent', (event) => {
       setContainers((containers) => {
         const newContainers = JSON.parse(JSON.stringify(containers));
@@ -130,8 +145,13 @@ export default function BoardViewMain() {
       let sortContainers = event.containers.sort(
         (a, b) => a.position - b.position
       );
+      sortContainers = sortContainers.map((container) => {
+        if (Array.isArray(container.items)) {
+          container.items.sort((a, b) => a.position - b.position);
+        }
+        return container;
+      });
       setContainers(sortContainers);
-      console.log('UpdatedItemPosition', event);
     })
     .listen('UpdateItemEvent', (event) => {
       setContainers((containers) => {
@@ -461,6 +481,34 @@ export default function BoardViewMain() {
     document.getElementById('edit_container_modal').close();
   };
 
+  const deleteContainerHandler = async () => {
+    const response = await deleteContainer({
+      container_id: currentSelectDeleteContainerId,
+    });
+    if (response.status == 403) {
+      setAlertBar({
+        type: 'error',
+        message: response.data.message,
+        isAlertVisible: true,
+      });
+      return;
+    }
+    if (!response.ok) {
+      setAlertBar({
+        type: 'error',
+        message: response.data.message,
+        isAlertVisible: true,
+      });
+      return;
+    }
+    setAlertBar({
+      type: 'success',
+      message: 'Container Deleted Successfully',
+      isAlertVisible: true,
+    });
+    document.getElementById('delete_container_modal').close();
+  };
+
   return (
     <div className="flex grow max-w-full">
       {/* Add Container Modal */}
@@ -519,7 +567,9 @@ export default function BoardViewMain() {
                   setCurrentContainerId(container.id);
                 }}
                 setCurrentSelectContainer={setCurrentSelectContainer}
-                setAlertBar={setAlertBar}
+                setCurrentSelectDeleteContainerId={
+                  setCurrentSelectDeleteContainerId
+                }
               >
                 <SortableContext items={container.items.map((i) => i.id)}>
                   <div className="flex items-start flex-col">
@@ -554,6 +604,7 @@ export default function BoardViewMain() {
           </DragOverlay>
         </DndContext>
       </div>
+
       <dialog id="edit_container_modal" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg text-red-500">
@@ -592,6 +643,33 @@ export default function BoardViewMain() {
           <button>close</button>
         </form>
       </dialog>
+
+      <dialog id="delete_container_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg text-red-500">Delete Container</h3>
+          <p className="py-4">Are you sure want to delete this container ?</p>
+          <div className="flex flex-row justify-end">
+            <button
+              onClick={() =>
+                document.getElementById('delete_container_modal').close()
+              }
+              className="btn bg-gray-300 mr-3"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={deleteContainerHandler}
+              className="btn bg-red-500 text-white"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+
       <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
