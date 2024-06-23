@@ -21,7 +21,7 @@ export default function BoardTopBar() {
   const deleteBoardHandler = async () => {
     const response = await deleteBoard(board.id);
     if (response.status == 403) {
-      setDeleteBoardError('You are not allowed to delete this board');
+      setDeleteBoardError('You dont have permission to delete this board');
       return;
     }
     if (!response.ok) {

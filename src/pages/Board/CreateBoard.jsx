@@ -4,6 +4,7 @@ import success_verify_svg from '../../assets/success_verify.svg';
 import { useNavigate, useRevalidator } from 'react-router-dom';
 import createBoardApi from '../../api/board/createBoard.api';
 import { useStore } from '../../hook/useStore';
+import AlertBar from '../../components/AlertBar';
 
 export default function CreateBoard() {
   const navigate = useNavigate();
@@ -14,19 +15,29 @@ export default function CreateBoard() {
   const [imageFile, setImageFile] = useState(null);
   const [imageRender, setImageRender] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [fileError, setFileError] = useState('');
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [alertBar, setAlertBar] = useState({
+    type: 'success',
+    message: '',
+    isAlertVisible: false,
+  });
 
   const selectFile = (e) => {
-    setFileError('');
     const file = e.target.files[0];
     if (file.type.split('/')[0] !== 'image') {
-      setFileError('file should be an image');
+      setAlertBar({
+        type: 'error',
+        message: 'File type should be image',
+        isAlertVisible: true,
+      });
       return;
     }
     if (file.size > 1024 * 1024 * 5) {
-      setFileError('File size should be less than 5MB');
+      setAlertBar({
+        type: 'error',
+        message: 'File size should be less than 5MB',
+        isAlertVisible: true,
+      });
       return;
     }
     setImageFile(file);
@@ -44,12 +55,20 @@ export default function CreateBoard() {
     });
     if (response.status === 403) {
       clearState();
-      setError('You dont have permission to create board');
+      setAlertBar({
+        type: 'error',
+        message: 'You dont have permission to create board in this workspace',
+        isAlertVisible: true,
+      });
       return;
     }
     if (!response.ok) {
       clearState();
-      setError(response.data.message);
+      setAlertBar({
+        type: 'error',
+        message: response.data.message,
+        isAlertVisible: true,
+      });
       return;
     }
     console.log('create Board ', response);
@@ -60,8 +79,6 @@ export default function CreateBoard() {
   };
 
   const clearState = () => {
-    setFileError('');
-    setError('');
     setSuccess(false);
     setLoading(false);
   };
@@ -82,7 +99,6 @@ export default function CreateBoard() {
             onChange={selectFile}
           />
         </div>
-        <span className="text-red-500">{fileError}</span>
         <label className="input input-bordered flex items-center gap-2">
           <input
             type="text"
@@ -123,9 +139,8 @@ export default function CreateBoard() {
             Create Board
           </button>
         )}
-
-        <span className="text-red-500">{error}</span>
       </div>
+      <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
 }

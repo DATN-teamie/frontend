@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import getListWspRoleApi from '../../api/workspace/getListWspRole';
 import { useStore } from '../../hook/useStore';
 import assignWspRole from '../../api/workspace/assignWspRole';
+import AlertBar from '../../components/AlertBar';
+import deleteUserWsp from '../../api/workspace/deleteUserWsp';
 
 export default function WspMemberList() {
   const { users } = useLoaderData();
@@ -15,6 +17,11 @@ export default function WspMemberList() {
   const [workspaceRoles, setWorkspaceRoles] = useState([]);
   const [currentSelectUserId, setCurrentSelectUserId] = useState(null);
   const [assignError, setAssignError] = useState('');
+  const [alertBar, setAlertBar] = useState({
+    isAlertVisible: false,
+    type: 'success',
+    message: '',
+  });
 
   useEffect(() => {
     async function getWorkspaceRoles() {
@@ -29,7 +36,6 @@ export default function WspMemberList() {
   }, [currentWorkspace.id]);
 
   const assignRole = async (user_id, workspace_id, worskpace_role_id) => {
-    setAssignError('');
     const response = await assignWspRole({
       user_id,
       workspace_id,
@@ -37,13 +43,22 @@ export default function WspMemberList() {
     });
 
     if (response.status === 403) {
-      setAssignError('You dont have permission to assign role');
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: "You don't have permission to assign role to this user",
+      });
       return;
     }
 
     if (response.ok) {
       revalidator.revalidate();
       setAssignError('');
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'success',
+        message: 'User role assigned successfully',
+      });
     }
   };
 
@@ -118,12 +133,49 @@ export default function WspMemberList() {
         </th>
         <th>
           {user.workspace_role_name !== 'owner' && user.id !== authUser.id ? (
-            <CiTrash className="size-6 cursor-pointer text-red-500 hover:bg-gray-200" />
+            <CiTrash
+              onClick={() => {
+                setCurrentSelectUserId(user.id);
+                document.getElementById('delete_user_wsp_modal').showModal();
+              }}
+              className="size-6 cursor-pointer text-red-500 hover:bg-gray-200"
+            />
           ) : null}
         </th>
       </tr>
     );
   });
+
+  const deleteUserWspHanlder = async () => {
+    const response = await deleteUserWsp(
+      currentWorkspace.id,
+      currentSelectUserId
+    );
+    console.log(response);
+    if (response.status == 403) {
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: "You don't have permission to delete user in Workspace",
+      });
+      return;
+    }
+    if (!response.ok) {
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: 'Failed to delete user',
+      });
+      return;
+    }
+    setAlertBar({
+      isAlertVisible: true,
+      type: 'success',
+      message: 'User deleted successfully',
+    });
+    revalidator.revalidate();
+    document.getElementById('delete_user_wsp_modal').close();
+  };
 
   return (
     <div className="flex flex-col grow overflow-scroll">
@@ -144,6 +196,34 @@ export default function WspMemberList() {
           <tbody>{usersRender}</tbody>
         </table>
       </div>
+
+      <dialog id="delete_user_wsp_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg text-red-500">Delete User</h3>
+          <p className="py-4">Are you sure want to delete this user ?</p>
+          <div className="flex flex-row justify-end">
+            <button
+              onClick={() =>
+                document.getElementById('delete_user_wsp_modal').close()
+              }
+              className="btn bg-gray-300 mr-3"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={deleteUserWspHanlder}
+              className="btn bg-red-500 text-white"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+
+      <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
 }
