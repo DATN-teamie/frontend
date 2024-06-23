@@ -3,14 +3,12 @@ import { sleep } from '../../helper/sleep';
 
 export default async function ({ avatar, name, description }) {
   try {
-
     const formData = new FormData();
     if (avatar) {
       formData.append('avatar', avatar, 'image');
     }
     formData.append('name', name);
-    formData.append('description', description);
-
+    formData.append('description', description ? description : '');
 
     const response = await fetch(`${baseurl}/api/user?_method=PUT`, {
       method: 'POST',

@@ -1,32 +1,17 @@
 import { apikey, baseurl } from '../constant.api';
 import { sleep } from '../../helper/sleep';
 
-export default async function ({
-  board_id,
-  item_id,
-  title,
-  description,
-  start_date,
-  due_date,
-}) {
+export default async function ({ workspace_id, role_wsp_id }) {
   try {
     const response = await fetch(
-      `${baseurl}/api/items/${item_id}/overview?_method=PUT`,
+      `${baseurl}/api/workspaces/${workspace_id}/roles/${role_wsp_id}`,
       {
-        method: 'POST',
+        method: 'GET',
         credentials: 'include',
         headers: {
-          'Content-Type': 'application/json',
           accept: 'application/json',
           apikey: apikey,
         },
-        body: JSON.stringify({
-          board_id: board_id,
-          title: title,
-          description: description ? description : '',
-          start_date: start_date,
-          due_date: due_date,
-        }),
       }
     );
     const data = await response.json();

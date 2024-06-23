@@ -3,9 +3,11 @@ import UpdateWorkspace from '../../pages/Workspace/UpdateWorkspace';
 import WorkspaceSideBar from '../../pages/Workspace/WorkspaceSideBar';
 import WspBoardHomepage from '../../pages/Workspace/WspBoardHomepage';
 import WspCreateRole from '../../pages/Workspace/WspCreateRole';
+import WspEditRole from '../../pages/Workspace/WspEditRole';
 import WspRoleSetting from '../../pages/Workspace/WspRoleSetting';
 import boardRoute from '../board/boardRoute';
 import detailWorkspaceLoader from './detailWorkspaceLoader';
+import detailWspRoleLoader from './detailWspRoleLoader';
 import listWspRoleLoader from './listWspRoleLoader';
 import memberWorkspaceRoute from './memberWorkspaceRoute';
 
@@ -38,6 +40,11 @@ export default {
     },
     {
       path: 'workspace-create-role',
+    },
+    {
+      path: 'workspace-edit-role/:roleWspId',
+      element: <WspEditRole />,
+      loader: detailWspRoleLoader,
     },
     memberWorkspaceRoute,
     boardRoute,

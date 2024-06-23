@@ -1,24 +1,26 @@
 import { useState } from 'react';
-import createWspRoleApi from '../../api/workspace/createWspRole';
 import success_verify_svg from '../../assets/success_verify.svg';
-import { useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate, useRevalidator } from 'react-router-dom';
 import { useStore } from '../../hook/useStore';
 import { IoIosArrowRoundBack } from 'react-icons/io';
+import updateRoleWsp from '../../api/workspace/updateRoleWsp';
 import AlertBar from '../../components/AlertBar';
 
-export default function WspCreateRole() {
+export default function WspEditRole() {
   const currentWorkpace = useStore((state) => state.currentWorkspace);
+  const { roleWsp } = useLoaderData();
   const navigate = useNavigate();
-  const [roleName, setRoleName] = useState('');
-  const [isCreateBoard, setIsCreateBoard] = useState(false);
-  const [isUpdateBoard, setIsUpdateBoard] = useState(false);
-  const [isDeleteBoard, setIsDeleteBoard] = useState(false);
-  const [isInviteUser, setIsInviteUser] = useState(false);
-  const [isRemoveUser, setIsRemoveUser] = useState(false);
-  const [isCreateRole, setIsCreateRole] = useState(false);
-  const [isUpdateRole, setIsUpdateRole] = useState(false);
-  const [isRemoveRole, setIsRemoveRole] = useState(false);
-  const [isAssignRole, setIsAssignRole] = useState(false);
+  const revalidator = useRevalidator();
+  const [roleName, setRoleName] = useState(roleWsp.name);
+  const [isCreateBoard, setIsCreateBoard] = useState(roleWsp.create_board);
+  const [isUpdateBoard, setIsUpdateBoard] = useState(roleWsp.update_board);
+  const [isDeleteBoard, setIsDeleteBoard] = useState(roleWsp.delete_board);
+  const [isInviteUser, setIsInviteUser] = useState(roleWsp.invite_user);
+  const [isRemoveUser, setIsRemoveUser] = useState(roleWsp.remove_user);
+  const [isCreateRole, setIsCreateRole] = useState(roleWsp.create_role);
+  const [isUpdateRole, setIsUpdateRole] = useState(roleWsp.update_role);
+  const [isRemoveRole, setIsRemoveRole] = useState(roleWsp.remove_role);
+  const [isAssignRole, setIsAssignRole] = useState(roleWsp.assign_role);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [alertBar, setAlertBar] = useState({
@@ -27,10 +29,11 @@ export default function WspCreateRole() {
     isAlertVisible: false,
   });
 
-  const createRole = async () => {
+  const editRole = async () => {
     clearState();
     setLoading(true);
-    const response = await createWspRoleApi({
+    const response = await updateRoleWsp({
+      role_wsp_id: roleWsp.id,
       workspace_id: currentWorkpace.id,
       name: roleName,
       create_board: isCreateBoard,
@@ -43,11 +46,10 @@ export default function WspCreateRole() {
       remove_role: isRemoveRole,
       assign_role: isAssignRole,
     });
-    console.log(response);
     if (response.status === 403) {
       clearState();
       setAlertBar({
-        message: 'You dont have permission to create role',
+        message: 'You dont have permission to edit role',
         type: 'error',
         isAlertVisible: true,
       });
@@ -65,6 +67,7 @@ export default function WspCreateRole() {
     clearState();
     setSuccess(true);
     navigate('../workspace-role-setting');
+    revalidator.revalidate();
   };
 
   const clearState = () => {
@@ -80,7 +83,7 @@ export default function WspCreateRole() {
       />
 
       <div className="flex flex-col  w-[40rem] px-16 space-y-10 border-2  shadow-lg  overflow-scroll">
-        <h1 className="mt-5 font-bold text-3xl">Create Role</h1>
+        <h1 className="mt-5 font-bold text-3xl">Edit Role</h1>
         <div className="flex flex-row justify-center items-center space-x-5"></div>
         <label className="input input-bordered flex items-center gap-2">
           <input
@@ -88,6 +91,7 @@ export default function WspCreateRole() {
             className="w-full h-20"
             placeholder="Role Name"
             onChange={(e) => setRoleName(e.target.value)}
+            value={roleName}
           />
         </label>
 
@@ -142,7 +146,7 @@ export default function WspCreateRole() {
         </div>
 
         <div className="flex justify-between items-center">
-          <h1 className="">create role</h1>
+          <h1 className="">edit role</h1>
           <input
             type="checkbox"
             className=" h-5 w-5 text-blue-600"
@@ -189,11 +193,8 @@ export default function WspCreateRole() {
         ) : loading ? (
           <span className="loading loading-spinner "></span>
         ) : (
-          <button
-            className="btn btn-primary w-full"
-            onClick={() => createRole()}
-          >
-            Create Role
+          <button className="btn btn-primary w-full" onClick={() => editRole()}>
+            Edit Role
           </button>
         )}
       </div>

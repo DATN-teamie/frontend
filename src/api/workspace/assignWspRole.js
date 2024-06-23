@@ -4,7 +4,7 @@ import { sleep } from '../../helper/sleep';
 export default async function ({ user_id, workspace_id, workspace_role_id }) {
   try {
     const response = await fetch(
-      `${baseurl}/api/workspaces/${workspace_id}/roles/assign`,
+      `${baseurl}/api/workspaces/${workspace_id}/roles-assign`,
       {
         method: 'POST',
         credentials: 'include',

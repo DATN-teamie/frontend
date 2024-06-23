@@ -2,16 +2,22 @@ import { apikey, baseurl } from '../constant.api';
 import { sleep } from '../../helper/sleep';
 
 export default async function ({
-  board_id,
-  item_id,
-  title,
-  description,
-  start_date,
-  due_date,
+  workspace_id,
+  role_wsp_id,
+  name,
+  create_board,
+  update_board,
+  delete_board,
+  invite_user,
+  remove_user,
+  create_role,
+  update_role,
+  remove_role,
+  assign_role,
 }) {
   try {
     const response = await fetch(
-      `${baseurl}/api/items/${item_id}/overview?_method=PUT`,
+      `${baseurl}/api/workspaces/${workspace_id}/roles/${role_wsp_id}`,
       {
         method: 'POST',
         credentials: 'include',
@@ -21,11 +27,16 @@ export default async function ({
           apikey: apikey,
         },
         body: JSON.stringify({
-          board_id: board_id,
-          title: title,
-          description: description ? description : '',
-          start_date: start_date,
-          due_date: due_date,
+          name,
+          create_board,
+          update_board,
+          delete_board,
+          invite_user,
+          remove_user,
+          create_role,
+          update_role,
+          remove_role,
+          assign_role,
         }),
       }
     );

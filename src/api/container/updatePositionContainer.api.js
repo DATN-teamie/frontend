@@ -4,7 +4,7 @@ import { sleep } from '../../helper/sleep';
 export default async function ({ board_id, containers }) {
   try {
     const response = await fetch(
-      `${baseurl}/api/containers/position?_method=PUT`,
+      `${baseurl}/api/containers-position?_method=PUT`,
       {
         method: 'POST',
         credentials: 'include',
