@@ -1,9 +1,21 @@
+import { useState } from 'react';
 import { CiTrash } from 'react-icons/ci';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate, useRevalidator } from 'react-router-dom';
+import { useStore } from '../../hook/useStore';
+import AlertBar from '../../components/AlertBar';
+import deleteWspRole from '../../api/workspace/deleteWspRole';
 
 export default function WspRoleSetting() {
+  const revalidator = useRevalidator();
   const { workspaceRoles } = useLoaderData();
+  const currentWorkspace = useStore((state) => state.currentWorkspace);
   const navigate = useNavigate();
+  const [currentSelectRoleId, setCurrentSelectRoleId] = useState(null);
+  const [alertBar, setAlertBar] = useState({
+    type: 'success',
+    message: '',
+    isAlertVisible: false,
+  });
 
   const renderRoles = workspaceRoles.map((role) => {
     return (
@@ -31,7 +43,10 @@ export default function WspRoleSetting() {
           {role.name === 'owner' || role.name === 'everyone' ? null : (
             <CiTrash
               className="size-6 cursor-pointer text-red-500 hover:bg-gray-200"
-              onClick={() => navigate(`../workspace-delete-role/${role.id}`)}
+              onClick={() => {
+                setCurrentSelectRoleId(role.id);
+                document.getElementById('delete_role_wsp_modal').showModal();
+              }}
             />
           )}
         </td>
@@ -84,6 +99,37 @@ export default function WspRoleSetting() {
     );
   });
 
+  const deleteRoleHandler = async () => {
+    const response = await deleteWspRole({
+      workspace_id: currentWorkspace.id,
+      wsp_role_id: currentSelectRoleId,
+    });
+    console.log(response);
+    if (response.status == 403) {
+      setAlertBar({
+        type: 'error',
+        message: response.data.message,
+        isAlertVisible: true,
+      });
+      return;
+    }
+    if (!response.ok) {
+      setAlertBar({
+        type: 'error',
+        message: 'Something went wrong',
+        isAlertVisible: true,
+      });
+      return;
+    }
+    setAlertBar({
+      type: 'success',
+      message: 'Role deleted successfully',
+      isAlertVisible: true,
+    });
+    document.getElementById('delete_role_wsp_modal').close();
+    revalidator.revalidate();
+  };
+
   return (
     <div className="flex  grow p-5 overflow-scroll">
       <div className="overflow-x-auto">
@@ -116,6 +162,32 @@ export default function WspRoleSetting() {
           <tbody>{renderRoles}</tbody>
         </table>
       </div>
+      <dialog id="delete_role_wsp_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg text-red-500">Delete Role</h3>
+          <p className="py-4">Are you sure want to delete this role ?</p>
+          <div className="flex flex-row justify-end">
+            <button
+              onClick={() =>
+                document.getElementById('delete_role_wsp_modal').close()
+              }
+              className="btn bg-gray-300 mr-3"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={deleteRoleHandler}
+              className="btn bg-red-500 text-white"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+      <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
 }
