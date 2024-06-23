@@ -5,6 +5,7 @@ import getListContainerApi from '../../api/container/getListContainer.api';
 import createItemApi from '../../api/item/createItem.api';
 import updatePositionContainerApi from '../../api/container/updatePositionContainer.api';
 import updatePositionItemApi from '../../api/item/updatePositionItem';
+import AlertBar from '../../components/AlertBar';
 
 // DnD
 import {
@@ -27,6 +28,7 @@ import Container from './Components/Container';
 import Items from './Components/Item';
 import Modal from './Components/Modal';
 import { useStore } from '../../hook/useStore';
+import updateContainerTitle from '../../api/container/updateContainerTitle';
 
 export default function BoardViewMain() {
   const currentBoard = useStore((state) => state.currentBoard);
@@ -34,9 +36,18 @@ export default function BoardViewMain() {
   const [activeId, setActiveId] = useState(null);
   const [currentContainerId, setCurrentContainerId] = useState();
   const [containerName, setContainerName] = useState('');
+  const [currentSelectContainer, setCurrentSelectContainer] = useState({
+    id: null,
+    title: '',
+  });
   const [itemName, setItemName] = useState('');
   const [showAddContainerModal, setShowAddContainerModal] = useState(false);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [alertBar, setAlertBar] = useState({
+    type: '',
+    message: '',
+    isAlertVisible: false,
+  });
 
   useEffect(() => {
     async function getContainer() {
@@ -44,7 +55,11 @@ export default function BoardViewMain() {
       if (response.ok) {
         let containers = [];
         if (Array.isArray(response.data.containers)) {
-          containers = response.data.containers.map((container) => {
+          // sort container by position
+          containers = response.data.containers.sort(
+            (a, b) => a.position - b.position
+          );
+          containers = containers.map((container) => {
             if (Array.isArray(container.items)) {
               container.items.sort((a, b) => a.position - b.position);
             }
@@ -101,8 +116,22 @@ export default function BoardViewMain() {
     .listen('UpdatedContainerPosition', (event) => {
       if (Array.isArray(event.containers)) setContainers(event.containers);
     })
+    .listen('UpdateContainerTitleEvent', (event) => {
+      setContainers((containers) => {
+        const newContainers = JSON.parse(JSON.stringify(containers));
+        const container = newContainers.find(
+          (container) => container.id === event.container.id
+        );
+        container.title = event.container.title;
+        return newContainers;
+      });
+    })
     .listen('UpdatedItemPosition', (event) => {
-      setContainers(event.containers);
+      let sortContainers = event.containers.sort(
+        (a, b) => a.position - b.position
+      );
+      setContainers(sortContainers);
+      console.log('UpdatedItemPosition', event);
     })
     .listen('UpdateItemEvent', (event) => {
       setContainers((containers) => {
@@ -402,6 +431,36 @@ export default function BoardViewMain() {
     setActiveId(null);
   }
 
+  const updateContainerTitleHandler = async () => {
+    const response = await updateContainerTitle({
+      container_id: currentSelectContainer.id,
+      title: currentSelectContainer.title,
+    });
+
+    if (response.status == 403) {
+      setAlertBar({
+        type: 'error',
+        message: response.data.message,
+        isAlertVisible: true,
+      });
+      return;
+    }
+    if (!response.ok) {
+      setAlertBar({
+        type: 'error',
+        message: response.data.message,
+        isAlertVisible: true,
+      });
+      return;
+    }
+    setAlertBar({
+      type: 'success',
+      message: 'Container Title Updated Successfully',
+      isAlertVisible: true,
+    });
+    document.getElementById('edit_container_modal').close();
+  };
+
   return (
     <div className="flex grow max-w-full">
       {/* Add Container Modal */}
@@ -459,6 +518,8 @@ export default function BoardViewMain() {
                   setShowAddItemModal(true);
                   setCurrentContainerId(container.id);
                 }}
+                setCurrentSelectContainer={setCurrentSelectContainer}
+                setAlertBar={setAlertBar}
               >
                 <SortableContext items={container.items.map((i) => i.id)}>
                   <div className="flex items-start flex-col">
@@ -493,6 +554,45 @@ export default function BoardViewMain() {
           </DragOverlay>
         </DndContext>
       </div>
+      <dialog id="edit_container_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg text-red-500">
+            Edit Container Title
+          </h3>
+          <input
+            type="text"
+            className="input input-bordered w-full my-5"
+            placeholder="Container Title"
+            value={currentSelectContainer.title}
+            onChange={(e) =>
+              setCurrentSelectContainer({
+                id: currentSelectContainer.id,
+                title: e.target.value,
+              })
+            }
+          />
+          <div className="flex flex-row justify-end">
+            <button
+              onClick={() =>
+                document.getElementById('edit_container_modal').close()
+              }
+              className="btn bg-gray-300 mr-3"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={updateContainerTitleHandler}
+              className="btn btn-primary text-white"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+      <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
 }

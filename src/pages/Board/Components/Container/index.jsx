@@ -1,10 +1,18 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GoPlus } from 'react-icons/go';
+import { GoPencil } from 'react-icons/go';
+import { CiTrash } from 'react-icons/ci';
 
 import clsx from 'clsx';
 
-const Container = ({ id, children, title, onAddItem }) => {
+const Container = ({
+  id,
+  children,
+  title,
+  onAddItem,
+  setCurrentSelectContainer,
+  setAlertBar,
+}) => {
   const {
     attributes,
     setNodeRef,
@@ -31,9 +39,24 @@ const Container = ({ id, children, title, onAddItem }) => {
         isDragging && 'opacity-50'
       )}
     >
-      <div className="flex items-center justify-between w-72">
-        <div className="flex flex-col gap-y-1 w-full cursor-pointer" {...listeners}>
-          <h1 className="text-gray-800 text-xl">{title}</h1>
+      <div className="flex items-center justify-between w-72 group">
+        <div className="flex flex-row gap-y-1 w-full cursor-pointer">
+          <div {...listeners} className="flex grow">
+            <h1 className="text-gray-800 text-xl">{title}</h1>
+          </div>
+        </div>
+        <div className="flex flex-row gap-x-2">
+          <GoPencil
+            onClick={() => {
+              document.getElementById('edit_container_modal').showModal();  
+              setCurrentSelectContainer({
+                id,
+                title,
+              });
+            }}
+            className="cursor-pointer hidden group-hover:block hover:bg-gray-300 size-5"
+          />
+          <CiTrash className="cursor-pointer hidden group-hover:block hover:bg-gray-300 size-5 text-red-500" />
         </div>
       </div>
 
