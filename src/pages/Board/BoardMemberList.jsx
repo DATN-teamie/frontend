@@ -1,10 +1,23 @@
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useRevalidator } from 'react-router-dom';
 import { IMG_URL } from '../../constant/common';
 import default_avatar from '../../assets/default_avatar.jpg';
 import { CiTrash } from 'react-icons/ci';
+import { useStore } from '../../hook/useStore';
+import { useState } from 'react';
 
 export default function BoardMemberList() {
   const { users } = useLoaderData();
+  const authUser = useStore((state) => state.authUser);
+  const revalidator = useRevalidator();
+  const [boardRoles, setBoardRoles] = useState([]);
+  const [currentSelectUserId, setCurrentSelectUserId] = useState(null);
+  const [alertBar, setAlertBar] = useState({
+    isAlertVisible: false,
+    type: 'success',
+    message: '',
+  });
+
+  const currentBoard = useStore((state) => state.currentBoard);
 
   const usersRender = users.map((user) => {
     const avatar = user.avatar ? IMG_URL + user.avatar : default_avatar;
@@ -46,16 +59,18 @@ export default function BoardMemberList() {
         <th>
           <button className="btn btn-ghost btn-xs">details</button>
         </th>
-        <th>
-          <CiTrash className="size-6 cursor-pointer text-red-500 hover:bg-gray-200" />
-        </th>
+        {currentBoard.is_private && (
+          <th>
+            <CiTrash className="size-6 cursor-pointer text-red-500 hover:bg-gray-200" />
+          </th>
+        )}
       </tr>
     );
   });
 
   return (
-    <div className='flex grow'>
-      <div name="daisyui-table" className="overflow-x-auto">
+    <div className="flex grow">
+      <div name="daisyui-table" className="grow overflow-scroll">
         <table className="table">
           {/* head */}
           <thead>

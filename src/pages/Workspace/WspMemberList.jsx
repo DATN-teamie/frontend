@@ -16,7 +16,6 @@ export default function WspMemberList() {
   const currentWorkspace = useStore((state) => state.currentWorkspace);
   const [workspaceRoles, setWorkspaceRoles] = useState([]);
   const [currentSelectUserId, setCurrentSelectUserId] = useState(null);
-  const [assignError, setAssignError] = useState('');
   const [alertBar, setAlertBar] = useState({
     isAlertVisible: false,
     type: 'success',
@@ -53,7 +52,6 @@ export default function WspMemberList() {
 
     if (response.ok) {
       revalidator.revalidate();
-      setAssignError('');
       setAlertBar({
         isAlertVisible: true,
         type: 'success',
@@ -179,9 +177,6 @@ export default function WspMemberList() {
 
   return (
     <div className="flex flex-col grow overflow-scroll">
-      {assignError && (
-        <span className="text-red-500 self-center">{assignError}</span>
-      )}
       <div name="daisyui-table" className="overflow-x-auto grow">
         <table className="table">
           {/* head */}

@@ -39,9 +39,6 @@ export default {
       element: <WspCreateRole />,
     },
     {
-      path: 'workspace-create-role',
-    },
-    {
       path: 'workspace-edit-role/:roleWspId',
       element: <WspEditRole />,
       loader: detailWspRoleLoader,

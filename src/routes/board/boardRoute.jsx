@@ -15,6 +15,11 @@ import detailItemLoader from '../item/detailItemLoader';
 import listUsersItemLoader from '../item/listUsersItemLoader';
 import listItemAttachmentsLoader from '../item/listItemAttachmentsLoader';
 import checkListItemLoader from '../item/checkListItemLoader';
+import BoardRoleSetting from '../../pages/Board/BoardRoleSetting';
+import listBoardRoleLoader from './listBoardRoleLoader';
+import BoardCreateRole from '../../pages/Board/BoardCreateRole';
+import detailBoardRoleLoader from './detailBoardRoleLoader';
+import BoardEditRole from '../../pages/Board/BoardEditRole';
 
 export default {
   path: 'b/:boardId',
@@ -28,6 +33,20 @@ export default {
     {
       path: 'board-update',
       element: <UpdateBoard />,
+    },
+    {
+      path: 'board-role-setting',
+      element: <BoardRoleSetting />,
+      loader: listBoardRoleLoader,
+    },
+    {
+      path: 'board-create-role',
+      element: <BoardCreateRole />,
+    },
+    {
+      path: 'board-edit-role/:roleBoardId',
+      element: <BoardEditRole />,
+      loader: detailBoardRoleLoader,
     },
     {
       path: 'members',

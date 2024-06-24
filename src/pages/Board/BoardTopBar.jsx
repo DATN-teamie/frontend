@@ -57,7 +57,10 @@ export default function BoardTopBar() {
             onClick={() => navigate('members')}
             className="size-7 mr-4 cursor-pointer hover:bg-gray-200 rounded-md"
           />
-          <LiaUserShieldSolid className="size-7 mr-4 hover:bg-gray-200 rounded-md" />
+          <LiaUserShieldSolid
+            onClick={() => navigate('board-role-setting')}
+            className="size-7 mr-4 cursor-pointer hover:bg-gray-200 rounded-md"
+          />
         </div>
 
         <button
