@@ -3,6 +3,7 @@ import updateItemOverviewApi from '../../api/item/updateItemOverview.api';
 import success_verify_svg from '../../assets/success_verify.svg';
 import { useNavigate, useRevalidator } from 'react-router-dom';
 import { useStore } from '../../hook/useStore';
+import AlertBar from '../../components/AlertBar';
 
 export default function ItemOverview() {
   const navigate = useNavigate();
@@ -23,8 +24,12 @@ export default function ItemOverview() {
   const [dueDate, setDueDate] = useState(currentItem.due_date || '');
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [alertBar, setAlertBar] = useState({
+    isAlertVisible: false,
+    type: 'success',
+    message: '',
+  });
 
   const updateItem = async () => {
     clearState();
@@ -38,11 +43,22 @@ export default function ItemOverview() {
       start_date: isStartDate ? startDate : null,
       due_date: isDueDate ? dueDate : null,
     });
-
-    console.log(response);
+    if (response.status == 500) {
+      clearState();
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: 'Internal server error',
+      });
+      return;
+    }
     if (!response.ok) {
       clearState();
-      setError(response.data.message);
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: response.data.message,
+      });
       return;
     }
     clearState();
@@ -54,13 +70,12 @@ export default function ItemOverview() {
   };
 
   const clearState = () => {
-    setError('');
     setSuccess(false);
     setLoading(false);
   };
 
   return (
-    <div className="flex grow justify-center">
+    <div className="flex grow justify-center mt-2">
       <div className="flex flex-col w-[40rem] px-16  border-2  shadow-lg">
         <label className="mt-5 input input-bordered flex items-center gap-2">
           <input
@@ -113,8 +128,6 @@ export default function ItemOverview() {
           />
         </div>
 
-        <div className="flex mt-7 text-red-500">{error}</div>
-
         <div className="mt-7">
           {success ? (
             <div className="flex space-x-3 items-center">
@@ -133,6 +146,7 @@ export default function ItemOverview() {
           )}
         </div>
       </div>
+      <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
 }

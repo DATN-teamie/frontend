@@ -457,7 +457,7 @@ export default function BoardViewMain() {
       title: currentSelectContainer.title,
     });
 
-    if (response.status == 403) {
+    if (response.status == 403 || response.status == 422) {
       setAlertBar({
         type: 'error',
         message: response.data.message,
@@ -465,10 +465,18 @@ export default function BoardViewMain() {
       });
       return;
     }
+    if (response.status == 500) {
+      setAlertBar({
+        type: 'error',
+        message: 'Server Error',
+        isAlertVisible: true,
+      });
+      return;
+    }
     if (!response.ok) {
       setAlertBar({
         type: 'error',
-        message: response.data.message,
+        message: 'something went wrong',
         isAlertVisible: true,
       });
       return;
@@ -493,10 +501,18 @@ export default function BoardViewMain() {
       });
       return;
     }
+    if (response.status == 500) {
+      setAlertBar({
+        type: 'error',
+        message: 'Server Error',
+        isAlertVisible: true,
+      });
+      return;
+    }
     if (!response.ok) {
       setAlertBar({
         type: 'error',
-        message: response.data.message,
+        message: 'something went wrong',
         isAlertVisible: true,
       });
       return;

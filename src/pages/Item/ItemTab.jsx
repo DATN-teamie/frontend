@@ -1,13 +1,43 @@
 import { Outlet, NavLink, useNavigate, useLoaderData } from 'react-router-dom';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { useStore } from '../../hook/useStore';
+import { CiTrash } from 'react-icons/ci';
+import AlertBar from '../../components/AlertBar';
+import { useState } from 'react';
+import deleteItem from '../../api/item/deleteItem';
 
 export default function ItemTab() {
   const navigate = useNavigate();
+  const [alertBar, setAlertBar] = useState({
+    isAlertVisible: false,
+    type: 'success',
+    message: '',
+  });
 
   const { item } = useLoaderData();
   const updateItem = useStore((state) => state.updateItem);
   updateItem(item);
+
+  const deleteItemHandler = async () => {
+    const response = await deleteItem({ item_id: item.id });
+    if (response.status == 500) {
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: 'Internal server error',
+      });
+      return;
+    }
+    if (!response.ok) {
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: response.data.message,
+      });
+      return;
+    }
+    navigate('..');
+  };
 
   return (
     <div className="flex flex-col flex-grow">
@@ -18,6 +48,13 @@ export default function ItemTab() {
         />
 
         <h1 className="mx-5 text-lg font-bold">{item.title}</h1>
+
+        <CiTrash
+          onClick={() =>
+            document.getElementById('delete_item_modal').showModal()
+          }
+          className="size-6 cursor-pointer text-red-500 mx-3 hover:bg-gray-200"
+        />
 
         <NavLink
           to=""
@@ -76,6 +113,34 @@ export default function ItemTab() {
       <div className="flex flex-grow">
         <Outlet />
       </div>
+
+      <dialog id="delete_item_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg text-red-500">Delete Item</h3>
+          <p className="py-4">Are you sure want to delete this item ?</p>
+          <div className="flex flex-row justify-end">
+            <button
+              onClick={() =>
+                document.getElementById('delete_item_modal').close()
+              }
+              className="btn bg-gray-300 mr-3"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={deleteItemHandler}
+              className="btn bg-red-500 text-white"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+
+      <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
 }
