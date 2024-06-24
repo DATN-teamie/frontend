@@ -8,20 +8,33 @@ import {
   CiTrash,
 } from 'react-icons/ci';
 import { LiaUserShieldSolid } from 'react-icons/lia';
-import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
+import {
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useRevalidator,
+} from 'react-router-dom';
 import { IMG_URL } from '../../constant/common';
 import { useStore } from '../../hook/useStore';
 import default_workspace_cover from '../../assets/default_workspace_cover.jpg';
 import default_board_cover from '../../assets/default_board_cover.jpg';
 import deleteWsp from '../../api/workspace/deleteWsp';
 import { useState } from 'react';
+import AlertBar from '../../components/AlertBar';
+import { BiDoorOpen } from 'react-icons/bi';
+import leaveWsp from '../../api/workspace/leaveWsp';
 
 export default function WorkspaceSideBar() {
   const { workspace, boards } = useLoaderData();
   const navigate = useNavigate();
-  const [deleteWspError, setDeleteWspError] = useState('');
+  const revalidator = useRevalidator();
   const updateWorkspace = useStore((state) => state.updateWorkspace);
   updateWorkspace(workspace);
+  const [alertBar, setAlertBar] = useState({
+    isAlertVisible: false,
+    type: 'success',
+    message: '',
+  });
 
   const srcImg = workspace.cover_img
     ? IMG_URL + workspace.cover_img
@@ -51,14 +64,46 @@ export default function WorkspaceSideBar() {
   const deleteWorkspace = async () => {
     const response = await deleteWsp(workspace.id);
     if (response.status == 403) {
-      setDeleteWspError('You are not allowed to delete this workspace');
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: 'You are not allowed to delete this workspace',
+      });
+
       return;
     }
     if (!response.ok) {
-      setDeleteWspError('Something went wrong');
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: 'something went wrong',
+      });
       return;
     }
     navigate('/');
+  };
+
+  const leaveWorkspaceHandler = async () => {
+    const response = await leaveWsp(workspace.id);
+    if (response.status == 403) {
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: response.data.message,
+      });
+
+      return;
+    }
+    if (!response.ok) {
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: 'something went wrong',
+      });
+      return;
+    }
+    navigate('/');
+    revalidator.revalidate();
   };
 
   return (
@@ -107,20 +152,31 @@ export default function WorkspaceSideBar() {
         <div
           className="flex flex-row items-center p-3 -mt-3 cursor-pointer group hover:bg-red-500"
           onClick={() => {
-            setDeleteWspError('');
             document.getElementById('delete_wsp_modal').showModal();
           }}
         >
           <CiTrash className="size-6 group-hover:text-white" />
-          <span className="text-lg ml-5 group-hover:text-white">Delete Workspace</span>
+          <span className="text-lg ml-5 group-hover:text-white">
+            Delete Workspace
+          </span>
         </div>
+
+        <div
+          className="flex flex-row items-center p-3 -mt-3 cursor-pointer group hover:bg-red-500"
+          onClick={() => {
+            document.getElementById('leave_wsp_modal').showModal();
+          }}
+        >
+          <BiDoorOpen className="size-6 group-hover:text-white" />
+          <span className="text-lg ml-5 group-hover:text-white">
+            Leave Workspace
+          </span>
+        </div>
+
         <dialog id="delete_wsp_modal" className="modal">
           <div className="modal-box">
             <h3 className="font-bold text-lg text-red-500">Delete Workspace</h3>
             <p className="py-4">Are you sure want to delete this workspace ?</p>
-            {deleteWspError && (
-              <div className="text-red-500 p-3 mt-3">{deleteWspError}</div>
-            )}
             <div className="flex flex-row justify-end">
               <button
                 onClick={() =>
@@ -143,6 +199,32 @@ export default function WorkspaceSideBar() {
           </form>
         </dialog>
 
+        <dialog id="leave_wsp_modal" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg text-red-500">Leave Workspace</h3>
+            <p className="py-4">Are you sure want to leave this workspace ?</p>
+            <div className="flex flex-row justify-end">
+              <button
+                onClick={() =>
+                  document.getElementById('leave_wsp_modal').close()
+                }
+                className="btn bg-gray-300 mr-3"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={leaveWorkspaceHandler}
+                className="btn bg-red-500 text-white"
+              >
+                Leave
+              </button>
+            </div>
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
+
         <div className="divider divider-start ml-3 font-bold text-lg">
           Your Boards
         </div>
@@ -156,6 +238,7 @@ export default function WorkspaceSideBar() {
         {boardsRender}
       </div>
       <div className="flex grow" style={{ maxWidth: 'calc(100% - 20rem)' }}>
+        <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
         <Outlet />
       </div>
     </>

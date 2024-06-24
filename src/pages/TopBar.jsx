@@ -136,7 +136,7 @@ export default function TopBar() {
                 onClick={() => navigate('update-user')}
                 className="hover:bg-gray-300 cursor-pointer mt-5 text-base"
               >
-                Settings
+                Profile Settings
               </div>
 
               <div className="divider"></div>
