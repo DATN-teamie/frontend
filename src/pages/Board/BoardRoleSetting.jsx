@@ -111,7 +111,7 @@ export default function BoardRoleSetting() {
     if (response.status == 403) {
       setAlertBar({
         type: 'error',
-        message: response.data.message,
+        message: 'You dont have permission to delete role in this board',
         isAlertVisible: true,
       });
       return;

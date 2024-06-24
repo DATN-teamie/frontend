@@ -55,7 +55,7 @@ export default function ItemMembers() {
     if (response.status == 403) {
       setAlertBar({
         isAlertVisible: true,
-        message: response.data.message,
+        message: 'You do not have permission to remove user from item',
         type: 'error',
       });
       return;
@@ -92,7 +92,7 @@ export default function ItemMembers() {
         </table>
       </div>
       <div>
-        <ItemMemberAdd />
+        <ItemMemberAdd alertBar={alertBar} setAlertBar={setAlertBar} />
       </div>
       <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>

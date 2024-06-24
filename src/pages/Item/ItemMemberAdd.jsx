@@ -9,7 +9,7 @@ import success_verify_svg from '../../assets/success_verify.svg';
 import { IMG_URL } from '../../constant/common';
 import { useRevalidator } from 'react-router-dom';
 
-export default function ItemMemberAdd() {
+export default function ItemMemberAdd({ alertBar, setAlertBar }) {
   const revalidator = useRevalidator();
   const currentItem = useStore((state) => state.currentItem);
   const currentBoard = useStore((state) => state.currentBoard);
@@ -48,7 +48,24 @@ export default function ItemMemberAdd() {
       item_id: currentItem.id,
       user_ids: user_ids,
     });
-    console.log(response);
+    if (response.status == 403) {
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'You do not have permission to add users',
+        type: 'error',
+      });
+      setLoadingInvite(false);
+      return;
+    }
+    if (!response.ok) {
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'something went wrong',
+        type: 'error',
+      });
+      setLoadingInvite(false);
+      return;
+    }
     if (response.ok) {
       setSuccess(true);
       setSelectedUsers([]);
@@ -56,7 +73,7 @@ export default function ItemMemberAdd() {
       revalidator.revalidate();
       setTimeout(() => {
         setSuccess(false);
-      }, 1000);
+      }, 500);
     }
     setLoadingInvite(false);
   };

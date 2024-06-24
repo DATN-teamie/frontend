@@ -34,10 +34,19 @@ export default function Checklists() {
       item_id: currentItem.id,
       name: ChecklistItemName,
     });
+    if (response.status == 403) {
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'You do not have permission to add checklist item',
+        type: 'error',
+      });
+      setAddLoading(false);
+      return;
+    }
     if (!response.ok) {
       setAlertBar({
         isAlertVisible: true,
-        message: 'Failed to add checklist item',
+        message: 'something went wrong',
         type: 'error',
       });
       setAddLoading(false);
@@ -56,6 +65,14 @@ export default function Checklists() {
         name: checklist_item.name,
         is_completed: !checklist_item.is_completed,
       });
+      if (response.status == 403) {
+        setAlertBar({
+          isAlertVisible: true,
+          message: 'You do not have permission to update checklist item',
+          type: 'error',
+        });
+        return;
+      }
       if (!response.ok) {
         setAlertBar({
           isAlertVisible: true,
@@ -74,7 +91,7 @@ export default function Checklists() {
       if (response.status == 403) {
         setAlertBar({
           isAlertVisible: true,
-          message: response.data.message,
+          message: 'You do not have permission to delete checklist item',
           type: 'error',
         });
         return;

@@ -141,7 +141,7 @@ export default function BoardCreateRole() {
         </div>
 
         <div className="flex justify-between items-center">
-          <h1 className="">role board management: add, delete, edit</h1>
+          <h1 className="">role board management: add, delete, edit, assign</h1>
           <input
             type="checkbox"
             className=" h-5 w-5 text-blue-600"

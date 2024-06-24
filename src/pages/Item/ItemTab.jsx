@@ -20,11 +20,11 @@ export default function ItemTab() {
 
   const deleteItemHandler = async () => {
     const response = await deleteItem({ item_id: item.id });
-    if (response.status == 500) {
+    if (response.status == 403) {
       setAlertBar({
         isAlertVisible: true,
         type: 'error',
-        message: 'Internal server error',
+        message: response.data.message,
       });
       return;
     }
@@ -32,7 +32,7 @@ export default function ItemTab() {
       setAlertBar({
         isAlertVisible: true,
         type: 'error',
-        message: response.data.message,
+        message: 'something went wrong',
       });
       return;
     }

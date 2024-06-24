@@ -45,7 +45,7 @@ export default function BoardMemberList() {
       setAlertBar({
         isAlertVisible: true,
         type: 'error',
-        message: "You don't have permission to assign role to this user",
+        message: "You don't have permission to assign role in this board",
       });
       return;
     }
@@ -151,7 +151,6 @@ export default function BoardMemberList() {
       currentBoard.id,
       currentSelectUserId
     );
-    console.log(response);
     if (response.status == 403) {
       setAlertBar({
         isAlertVisible: true,

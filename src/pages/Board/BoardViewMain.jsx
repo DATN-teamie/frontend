@@ -171,12 +171,19 @@ export default function BoardViewMain() {
     });
 
   const onAddContainer = async () => {
-    if (!containerName) return;
     const response = await createContainerApi({
       board_id: currentBoard.id,
       title: containerName,
       position: containers.length,
     });
+    if (response.status == 403 || response.status == 422) {
+      setAlertBar({
+        type: 'error',
+        message: response.data.message,
+        isAlertVisible: true,
+      });
+      return;
+    }
     if (response.ok) {
       const newContainer = response.data.container;
       setContainers([
@@ -194,7 +201,6 @@ export default function BoardViewMain() {
   };
 
   const onAddItem = async () => {
-    if (!itemName) return;
     const container = containers.find((item) => item.id === currentContainerId);
     if (!container) return;
     const response = await createItemApi({
@@ -202,6 +208,14 @@ export default function BoardViewMain() {
       title: itemName,
       position: container.items.length,
     });
+    if (response.status == 403 || response.status == 422) {
+      setAlertBar({
+        type: 'error',
+        message: response.data.message,
+        isAlertVisible: true,
+      });
+      return;
+    }
     if (response.ok) {
       const newItem = response.data.item;
       container.items.push({

@@ -15,7 +15,6 @@ import { CiTrash } from 'react-icons/ci';
 import deleteAttachment from '../../api/item/deleteAttachment';
 
 export default function Attachments() {
-  const [fileError, setFileError] = useState('');
   const [loading, setLoading] = useState(false);
   const fileInput = useRef();
   const revalidator = useRevalidator();
@@ -36,13 +35,33 @@ export default function Attachments() {
       attachments: e.target.files,
     });
 
+    if (response.status == 403) {
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'You do not have permission to upload attachment',
+        type: 'error',
+      });
+      setLoading(false);
+      return;
+    }
+
     if (!response.ok) {
-      setFileError('Error uploading files');
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'Something went wrong',
+        type: 'error',
+      });
+      setLoading(false);
+      return;
     }
 
     if (response.ok) {
       revalidator.revalidate();
-      setFileError('');
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'Upload attachment successfully',
+        type: 'success',
+      });
     }
 
     // Reset the file input after the function is done
@@ -82,7 +101,7 @@ export default function Attachments() {
       if (response.status == 403) {
         setAlertBar({
           isAlertVisible: true,
-          message: response.data.message,
+          message: 'You do not have permission to delete attachment',
           type: 'error',
         });
         return;
@@ -169,7 +188,6 @@ export default function Attachments() {
           onChange={selectFile}
           multiple
         />
-        <span className="text-red-500">{fileError}</span>
         {loading && <span className="loading loading-bars loading-lg"></span>}
       </div>
       <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />

@@ -8,6 +8,7 @@ import success_verify_svg from '../../assets/success_verify.svg';
 
 import { IMG_URL } from '../../constant/common';
 import { useRevalidator } from 'react-router-dom';
+import AlertBar from '../../components/AlertBar';
 
 export default function BoardMemberInvite() {
   const revalidator = useRevalidator();
@@ -19,6 +20,11 @@ export default function BoardMemberInvite() {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [loadingInvite, setLoadingInvite] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [alertBar, setAlertBar] = useState({
+    isAlertVisible: false,
+    type: 'success',
+    message: '',
+  });
 
   const onSearchUsers = async () => {
     setLoadingSearch(true);
@@ -47,7 +53,24 @@ export default function BoardMemberInvite() {
       board_id: currentBoard.id,
       user_ids: user_ids,
     });
-    console.log(response);
+    if (response.status === 403) {
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: "You don't have permission to invite user to this board",
+      });
+      setLoadingInvite(false);
+      return;
+    }
+    if (!response.ok) {
+      setAlertBar({
+        isAlertVisible: true,
+        type: 'error',
+        message: 'something went wrong',
+      });
+      setLoadingInvite(false);
+      return;
+    }
     if (response.ok) {
       setSuccess(true);
       setSelectedUsers([]);
@@ -55,7 +78,7 @@ export default function BoardMemberInvite() {
       revalidator.revalidate();
       setTimeout(() => {
         setSuccess(false);
-      }, 1000);
+      }, 500);
     }
     setLoadingInvite(false);
   };
@@ -168,6 +191,7 @@ export default function BoardMemberInvite() {
           </button>
         )}
       </div>
+      <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
 }
