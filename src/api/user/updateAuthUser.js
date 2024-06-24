@@ -1,7 +1,14 @@
 import { apikey, baseurl } from '../constant.api';
 import { sleep } from '../../helper/sleep';
 
-export default async function ({ avatar, name, description }) {
+export default async function ({
+  avatar,
+  name,
+  description,
+  phone,
+  address,
+  title,
+}) {
   try {
     const formData = new FormData();
     if (avatar) {
@@ -9,6 +16,9 @@ export default async function ({ avatar, name, description }) {
     }
     formData.append('name', name);
     formData.append('description', description ? description : '');
+    formData.append('phone', phone ? phone : '');
+    formData.append('address', address ? address : '');
+    formData.append('title', title ? title : '');
 
     const response = await fetch(`${baseurl}/api/user?_method=PUT`, {
       method: 'POST',

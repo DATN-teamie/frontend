@@ -8,6 +8,7 @@ import { useStore } from '../../hook/useStore';
 import assignBoardRole from '../../api/board/assignBoardRole';
 import AlertBar from '../../components/AlertBar';
 import deleteUserBoard from '../../api/board/deleteUserBoard';
+import getUserById from '../../api/user/getUserById';
 
 export default function BoardMemberList() {
   const { users } = useLoaderData();
@@ -16,6 +17,8 @@ export default function BoardMemberList() {
   const currentBoard = useStore((state) => state.currentBoard);
   const [boardRoles, setBoardRoles] = useState([]);
   const [currentSelectUserId, setCurrentSelectUserId] = useState(null);
+  const [currentUserDetail, setCurrentUserDetail] = useState({});
+
   const [alertBar, setAlertBar] = useState({
     isAlertVisible: false,
     type: 'success',
@@ -127,7 +130,12 @@ export default function BoardMemberList() {
         </td>
 
         <th>
-          <button className="btn btn-ghost btn-xs">details</button>
+          <button
+            onClick={() => getUserDetailHandler(user.id)}
+            className="btn btn-ghost btn-xs"
+          >
+            details
+          </button>
         </th>
         <th>
           {user.board_role_name !== 'owner' &&
@@ -176,6 +184,14 @@ export default function BoardMemberList() {
     document.getElementById('delete_user_board_modal').close();
   };
 
+  const getUserDetailHandler = async (user_id) => {
+    const response = await getUserById({ user_id });
+    if (response.ok) {
+      setCurrentUserDetail(response.data.user);
+      document.getElementById('user_detail_board_modal').showModal();
+    }
+  };
+
   return (
     <div className="flex flex-col grow overflow-scroll">
       <div name="daisyui-table" className="overflow-x-auto grow">
@@ -212,6 +228,49 @@ export default function BoardMemberList() {
             >
               Delete
             </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+
+      <dialog id="user_detail_board_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg mb-5">User Details</h3>
+          <div className="flex flex-row gap-4">
+            <div className="avatar">
+              <div className="mask mask-squircle w-12 h-12">
+                <img
+                  src={
+                    currentUserDetail.avatar
+                      ? IMG_URL + currentUserDetail.avatar
+                      : default_avatar
+                  }
+                  alt="Avatar Tailwind CSS Component"
+                />
+              </div>
+            </div>
+            <div>
+              <div className="font-bold">{currentUserDetail.name}</div>
+              <div>{currentUserDetail.email}</div>
+            </div>
+          </div>
+          <div>
+            <div className="font-bold mt-3">Description:</div>
+            <div>{currentUserDetail.description}</div>
+          </div>
+          <div>
+            <div className="font-bold">Phone:</div>
+            <div>{currentUserDetail.phone}</div>
+          </div>
+          <div>
+            <div className="font-bold">Title:</div>
+            <div>{currentUserDetail.title}</div>
+          </div>
+          <div>
+            <div className="font-bold">Address:</div>
+            <div>{currentUserDetail.address}</div>
           </div>
         </div>
         <form method="dialog" className="modal-backdrop">
