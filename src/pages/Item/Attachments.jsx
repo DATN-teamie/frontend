@@ -10,6 +10,9 @@ import default_file_image from '../../assets/default_file_image.png';
 import { IMG_URL } from '../../constant/common';
 
 import { useLoaderData, useRevalidator } from 'react-router-dom';
+import AlertBar from '../../components/AlertBar';
+import { CiTrash } from 'react-icons/ci';
+import deleteAttachment from '../../api/item/deleteAttachment';
 
 export default function Attachments() {
   const [fileError, setFileError] = useState('');
@@ -19,6 +22,12 @@ export default function Attachments() {
   const { attachments } = useLoaderData();
 
   const currentItem = useStore((state) => state.currentItem);
+
+  const [alertBar, setAlertBar] = useState({
+    isAlertVisible: false,
+    message: '',
+    type: 'success',
+  });
 
   const selectFile = async (e) => {
     setLoading(true);
@@ -66,6 +75,34 @@ export default function Attachments() {
       fileType = 'image';
     }
 
+    const deleteAttachmentHandler = async (attachment_id) => {
+      const response = await deleteAttachment({
+        attachment_id: attachment_id,
+      });
+      if (response.status == 403) {
+        setAlertBar({
+          isAlertVisible: true,
+          message: response.data.message,
+          type: 'error',
+        });
+        return;
+      }
+      if (!response.ok) {
+        setAlertBar({
+          isAlertVisible: true,
+          message: 'Something went wrong',
+          type: 'error',
+        });
+        return;
+      }
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'Delete attachment successfully',
+        type: 'success',
+      });
+      revalidator.revalidate();
+    };
+
     return (
       <tr key={attachment.id}>
         <td>
@@ -94,6 +131,14 @@ export default function Attachments() {
           >
             download
           </a>
+        </th>
+        <th>
+          <CiTrash
+            className="size-5 text-red-500 cursor-pointer hover:bg-gray-200"
+            onClick={() => {
+              deleteAttachmentHandler(attachment.id);
+            }}
+          />
         </th>
       </tr>
     );
@@ -127,6 +172,7 @@ export default function Attachments() {
         <span className="text-red-500">{fileError}</span>
         {loading && <span className="loading loading-bars loading-lg"></span>}
       </div>
+      <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
 }

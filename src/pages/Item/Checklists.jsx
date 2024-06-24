@@ -4,19 +4,29 @@ import addChecklistItemApi from '../../api/item/addChecklistItem';
 import { useStore } from '../../hook/useStore';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
 import updateChecklistItem from '../../api/item/updateChecklistItem';
+import AlertBar from '../../components/AlertBar';
+import deleteChecklistItem from '../../api/item/deleteChecklistItem';
 
 export default function Checklists() {
   const revalidator = useRevalidator();
   const { checklist_items } = useLoaderData();
+  console.log(checklist_items);
   const currentItem = useStore((state) => state.currentItem);
   const [ChecklistItemName, setChecklistItemName] = useState('');
-  const [error, setError] = useState('');
   const [addLoading, setAddLoading] = useState(false);
+  const [alertBar, setAlertBar] = useState({
+    isAlertVisible: false,
+    message: '',
+    type: 'success',
+  });
   const addChecklistItem = async () => {
-    setError('');
     setAddLoading(true);
     if (ChecklistItemName === '') {
-      setError('Checklist item name is required');
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'Checklist item name is required',
+        type: 'error',
+      });
       setAddLoading(false);
       return;
     }
@@ -25,7 +35,11 @@ export default function Checklists() {
       name: ChecklistItemName,
     });
     if (!response.ok) {
-      setError('Failed to add checklist item');
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'Failed to add checklist item',
+        type: 'error',
+      });
       setAddLoading(false);
       return;
     }
@@ -36,8 +50,6 @@ export default function Checklists() {
 
   const renderChecklistItems = checklist_items.map((checklist_item) => {
     const handleCheck = async () => {
-      setError('');
-      console.log('hello');
       const response = await updateChecklistItem({
         item_id: currentItem.id,
         checklist_item_id: checklist_item.id,
@@ -45,9 +57,41 @@ export default function Checklists() {
         is_completed: !checklist_item.is_completed,
       });
       if (!response.ok) {
-        setError('Failed to update checklist item');
+        setAlertBar({
+          isAlertVisible: true,
+          message: 'Failed to update checklist item',
+          type: 'error',
+        });
         return;
       }
+      revalidator.revalidate();
+    };
+
+    const deleteChecklistItemHandler = async (checklist_id) => {
+      const response = await deleteChecklistItem({
+        checklist_id: checklist_id,
+      });
+      if (response.status == 403) {
+        setAlertBar({
+          isAlertVisible: true,
+          message: response.data.message,
+          type: 'error',
+        });
+        return;
+      }
+      if (!response.ok) {
+        setAlertBar({
+          isAlertVisible: true,
+          message: 'Failed to delete checklist item',
+          type: 'error',
+        });
+        return;
+      }
+      setAlertBar({
+        isAlertVisible: true,
+        message: 'Checklist item deleted',
+        type: 'success',
+      });
       revalidator.revalidate();
     };
     return (
@@ -82,7 +126,10 @@ export default function Checklists() {
             </div>
           </td>
           <th>
-            <CiTrash className="size-6 cursor-pointer text-red-500 hover:bg-gray-200" />
+            <CiTrash
+              onClick={() => deleteChecklistItemHandler(checklist_item.id)}
+              className="size-6 cursor-pointer text-red-500 hover:bg-gray-200"
+            />
           </th>
         </tr>
       </>
@@ -117,8 +164,8 @@ export default function Checklists() {
             </button>
           )}
         </div>
-        {error && <div className="text-red-500 mt-5">{error}</div>}
       </div>
+      <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
   );
 }
