@@ -4,12 +4,16 @@ import teamwork from '../../assets/teamwork.jpg';
 import success_verify_svg from '../../assets/success_verify.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import loginApi from '../../api/auth/login.api';
+import { IoEyeOutline } from 'react-icons/io5';
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [typePassword, setTypePassword] = useState('password');
+
   const navigate = useNavigate();
 
   const login = async () => {
@@ -69,13 +73,24 @@ export default function Login() {
               <label className="label">
                 <span className="label-text">Password</span>
               </label>
-              <input
-                type="password"
-                placeholder="password"
-                className="input input-bordered"
-                required
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  type={typePassword}
+                  placeholder="password"
+                  className="input input-bordered w-full"
+                  required
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <IoEyeOutline
+                  onClick={() =>
+                    setTypePassword(
+                      typePassword === 'password' ? 'text' : 'password'
+                    )
+                  }
+                  className="absolute right-3 top-3 text-gray-500 size-5 cursor-pointer"
+                />
+              </div>
+
               <span className="text-red-500 text-xs mt-2">{error}</span>
               <label className="label">
                 <Link
@@ -87,7 +102,7 @@ export default function Login() {
               </label>
             </div>
             {success ? (
-              <div className='flex space-x-3 items-center'>
+              <div className="flex space-x-3 items-center">
                 <img
                   src={success_verify_svg}
                   alt="success"

@@ -3,6 +3,7 @@ import bg_login from '../../assets/images/bg_login.jpg';
 import { Link, useNavigate } from 'react-router-dom';
 import signupApi from '../../api/auth/signup.api';
 import success_verify_svg from '../../assets/success_verify.svg';
+import { IoEyeOutline } from 'react-icons/io5';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -11,8 +12,10 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const navigate = useNavigate();
+  const [typePassword, setTypePassword] = useState('password');
+  const [typeConfirmPassword, setTypeConfirmPassword] = useState('password');
 
+  const navigate = useNavigate();
 
   const signup = async () => {
     setLoading(true);
@@ -28,7 +31,6 @@ export default function Signup() {
     setSuccess(true);
     setError('');
     navigate('/login');
-
   };
 
   const setFail = (data) => {
@@ -60,25 +62,45 @@ export default function Signup() {
               <label className="label">
                 <span className="label-text">Password</span>
               </label>
-              <input
-                type="password"
-                placeholder="password"
-                className="input input-bordered"
-                required
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  type={typePassword}
+                  placeholder="password"
+                  className="input input-bordered w-full"
+                  required
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <IoEyeOutline
+                  onClick={() =>
+                    setTypePassword(
+                      typePassword === 'password' ? 'text' : 'password'
+                    )
+                  }
+                  className="absolute right-3 top-3 text-gray-500 size-5 cursor-pointer"
+                />
+              </div>
             </div>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Confirm Password</span>
               </label>
-              <input
-                type="password"
-                placeholder="confirm password"
-                className="input input-bordered"
-                required
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  type={typeConfirmPassword}
+                  placeholder="confirm password"
+                  className="input input-bordered w-full"
+                  required
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <IoEyeOutline
+                  onClick={() =>
+                    setTypeConfirmPassword(
+                      typeConfirmPassword === 'password' ? 'text' : 'password'
+                    )
+                  }
+                  className="absolute right-3 top-3 text-gray-500 size-5 cursor-pointer"
+                />
+              </div>
             </div>
             {success ? (
               <div className="flex space-x-3 items-center">

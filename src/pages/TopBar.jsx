@@ -139,6 +139,13 @@ export default function TopBar() {
                 Profile Settings
               </div>
 
+              <div
+                onClick={() => navigate('reset-password')}
+                className="hover:bg-gray-300 cursor-pointer mt-5 text-base"
+              >
+                Change Password
+              </div>
+
               <div className="divider"></div>
 
               <div

@@ -5,6 +5,7 @@ import ListWorkspace from '../pages/Workspace/ListWorkspace';
 import listWorkspaceLoader from './workspace/listWorkspaceLoader';
 import workspaceRoute from './workspace/workspaceRoute';
 import UpdateUser from '../pages/User/UpdateUser';
+import ResetPassword from '../pages/User/ResetPassword';
 
 
 export default {
@@ -24,6 +25,10 @@ export default {
     {
       path: 'update-user',
       element: <UpdateUser />,
+    },
+    {
+      path: 'reset-password',
+      element: <ResetPassword />,
     },
     workspaceRoute,
   ],
