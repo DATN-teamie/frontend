@@ -99,7 +99,7 @@ export default function Login() {
               <span className="text-red-500 text-xs mt-2">{error}</span>
               <label className="label">
                 <Link
-                  to="forgot-password"
+                  to="/mail-forgot-password"
                   className="label-text-alt link link-hover text-blue-500 text-base"
                 >
                   Forgot password?

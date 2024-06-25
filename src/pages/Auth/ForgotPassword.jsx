@@ -1,20 +1,16 @@
 import { useState } from 'react';
 import { IoEyeOutline } from 'react-icons/io5';
 import AlertBar from '../../components/AlertBar';
-import resetPassword from '../../api/user/resetPassword';
-import { useStore } from '../../hook/useStore';
 import { sleep } from '../../helper/sleep';
-import { useNavigate, useRevalidator } from 'react-router-dom';
-import logoutApi from '../../api/auth/logout.api';
+import { useNavigate, useParams, useRevalidator } from 'react-router-dom';
+import forgotPassword from '../../api/user/forgotPassword';
 
-export default function ResetPassword() {
-  const authUser = useStore((state) => state.authUser);
+export default function ForgotPassword() {
+  const { userId, token } = useParams();
   const navigate = useNavigate();
   const revalidator = useRevalidator();
-  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [reNewPassword, setReNewPassword] = useState('');
-  const [typeCurrentPassword, setTypeCurrentPassword] = useState('password');
   const [typeNewPassword, setTypeNewPassword] = useState('password');
   const [typeReNewPassword, setTypeReNewPassword] = useState('password');
   const [isLoading, setIsLoading] = useState(false);
@@ -26,26 +22,21 @@ export default function ResetPassword() {
 
   const changePasswordHandler = async () => {
     setIsLoading(true);
-    const response = await resetPassword({
-      email: authUser.email,
-      current_password: currentPassword,
+    const response = await forgotPassword({
+      user_id: userId,
+      token: token,
       new_password: newPassword,
       confirm_password: reNewPassword,
     });
-    if (response.status == 422) {
+    if (
+      response.status == 422 ||
+      response.status == 401 ||
+      response.status == 404
+    ) {
       setAlertBar({
         isAlertVisible: true,
         type: 'error',
         message: response.data.message,
-      });
-      setIsLoading(false);
-      return;
-    }
-    if (response.status == 401) {
-      setAlertBar({
-        isAlertVisible: true,
-        type: 'error',
-        message: 'Current password is incorrect',
       });
       setIsLoading(false);
       return;
@@ -62,41 +53,21 @@ export default function ResetPassword() {
     setAlertBar({
       isAlertVisible: true,
       type: 'success',
-      message: 'Password changed successfully, you will be logged out.',
+      message:
+        'Password changed successfully, you will be redirected to login page',
     });
-    await sleep(1200);
-    revalidator.revalidate();
-    await sleep(1000);
     setIsLoading(false);
+    await sleep(2000);
     navigate('/login');
   };
 
   return (
-    <div className="flex grow justify-center ">
-      <div className="flex flex-col  w-[40rem] px-16 space-y-10 border-2  shadow-lg">
-        <h1 className="mt-5 font-bold text-3xl">Change Password</h1>
+    <div className="flex grow justify-center">
+      <div className="flex flex-col  w-[40rem] p-10 space-y-10 border-2  shadow-lg">
+        <h1 className="mt-5 font-bold text-lg">Change Password</h1>
 
         <div className="flex flex-col">
-          <label className="text-lg">Current Password</label>
-          <div className="relative">
-            <input
-              type={typeCurrentPassword}
-              className="border-2 border-gray-300 rounded-md p-2 w-full"
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-            <IoEyeOutline
-              onClick={() =>
-                setTypeCurrentPassword(
-                  typeCurrentPassword === 'password' ? 'text' : 'password'
-                )
-              }
-              className="absolute right-3 top-3 text-gray-500 size-5 cursor-pointer"
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col">
-          <label className="text-lg">New Password</label>
+          <label>New Password</label>
           <div className="relative">
             <input
               type={typeNewPassword}
@@ -115,7 +86,7 @@ export default function ResetPassword() {
         </div>
 
         <div className="flex flex-col">
-          <label className="text-lg">Enter New Password Again</label>
+          <label>Enter New Password Again</label>
           <div className="relative">
             <input
               type={typeReNewPassword}
@@ -132,13 +103,21 @@ export default function ResetPassword() {
             />
           </div>
         </div>
-        {isLoading ? (
-          <span className="loading loading-spinner loading-md"></span>
-        ) : (
-          <button onClick={changePasswordHandler} className="btn btn-primary">
-            Change Password
+        <div className="flex flex-row-reverse">
+          <button onClick={() => navigate('/login')} className="btn  w-fit">
+            Cancel
           </button>
-        )}
+          {isLoading ? (
+            <span className="loading loading-spinner loading-md"></span>
+          ) : (
+            <button
+              onClick={changePasswordHandler}
+              className="btn btn-primary  w-fit mr-5"
+            >
+              Change Password
+            </button>
+          )}
+        </div>
       </div>
       <AlertBar alertBar={alertBar} setAlertBar={setAlertBar} />
     </div>
