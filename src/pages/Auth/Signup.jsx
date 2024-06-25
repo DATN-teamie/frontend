@@ -4,37 +4,44 @@ import { Link, useNavigate } from 'react-router-dom';
 import signupApi from '../../api/auth/signup.api';
 import success_verify_svg from '../../assets/success_verify.svg';
 import { IoEyeOutline } from 'react-icons/io5';
+import AlertBar from '../../components/AlertBar';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [typePassword, setTypePassword] = useState('password');
   const [typeConfirmPassword, setTypeConfirmPassword] = useState('password');
+  const [alertBar, setAlertBar] = useState({
+    isAlertVisible: false,
+    message: '',
+    type: 'success',
+  });
 
   const navigate = useNavigate();
 
   const signup = async () => {
     setLoading(true);
-    setError('');
     const response = await signupApi({ email, password, confirmPassword });
-    console.log(response);
     if (!response.ok) {
-      setFail(response.data);
+      setAlertBar({
+        isAlertVisible: true,
+        message: response.data.message,
+        type: 'error',
+      });
       setLoading(false);
       return;
     }
+    setAlertBar({
+      isAlertVisible: true,
+      message: 'You registered successfully! Please verify your email.',
+      type: 'success',
+    });
+
     setLoading(false);
     setSuccess(true);
-    setError('');
-    navigate('/login');
-  };
-
-  const setFail = (data) => {
-    setError(data.message);
   };
 
   return (
@@ -118,7 +125,6 @@ export default function Signup() {
                 </button>
               </div>
             )}
-            <span className="text-red-500 text-sm">{error}</span>
             <label className={`label ${loading ? 'hidden' : ''}`}>
               <span className="label-text-alt text-base">
                 Already have an account?
@@ -133,6 +139,7 @@ export default function Signup() {
           </div>
         </div>
       </div>
+      <AlertBar alertBar={alertBar} setAleretBar={setAlertBar} />
     </div>
   );
 }

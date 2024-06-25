@@ -21,7 +21,12 @@ export default function Login() {
     setError('');
 
     const response = await loginApi({ email, password });
-    console.log(response);
+    if (response.status == 418) {
+      setLoading(false);
+      navigate(`/resend-verify-email/${email}`);
+      return;
+    }
+
     if (!response.ok) {
       setFail(response.data);
       setLoading(false);
